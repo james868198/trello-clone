@@ -1,11 +1,12 @@
 .App {
-  text-align: center;
+  position: relative;
+  height: 100vh;
+  /* margin: 0 auto; */
+  overflow: hidden;
+  background-color: #282c34;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
+
 
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
