@@ -4,14 +4,13 @@ import trelloBoardSlice from './trelloBoardSlice';
 const initialState = {
   lists: [],
   createdCounter: 1,
-  draggedCard: null,
 };
 
 export const trelloListSlice = createSlice({
     name: 'trelloList',
     initialState,
     reducers: {
-        createList: (state, action) => {
+        addList: (state, action) => {
           const { boardId, listId, } = action.payload
           if (boardId && listId) {
             const now = Date.now()
@@ -52,13 +51,20 @@ export const trelloListSlice = createSlice({
             state.lists = state.lists.filter((list, index) => list.id !== listId)
           }
         },
-        // insertList: (state, action) => {
-        //   const { listId } = action.payload
-        //   const list = state.lists[listId]
-        //   if (list) {
-        //     state.listOrder.push(listId)
-        //   }
-        // },
+        insertList: (state, action) => {
+          const { listOrder, draggedList } = action.payload
+
+          if (draggedList == null || listOrder > state.lists.length)
+            return
+          if (state.lists[listOrder].id === draggedList.id)
+            return
+          
+          // remove list from original position
+          state.lists = state.lists.filter(((list) => list.id !== draggedList.id))
+          
+          // insert card to new position
+          state.lists.splice(listOrder, 0, draggedList)
+        },
         addCard: (state, action) => {
           const { order, card } = action.payload
           const list = state.lists[order]
@@ -82,51 +88,39 @@ export const trelloListSlice = createSlice({
           if (list && cardId)
             list.cards.filter(card => card.cardId !== cardId)
         },
-        dragCard: (state, action) => {
-          const { card } = action.payload
-          if (state.draggedCard === card)
-            return
-          state.draggedCard = card
-        },
-        dropCard: (state) => {
-          if (state.draggedCard !== null)
-            state.draggedCard = null
-        },
         insertCard: (state, action) => {
-          const { listOrder, cardOrder } = action.payload
+          const { listOrder, cardOrder, draggedCard } = action.payload
 
-          if (state.draggedCard == null)
+          if (draggedCard == null || listOrder >= state.lists.length)
             return
 
-          const draggedCard = state.draggedCard
-          if (listOrder < state.lists.length && cardOrder < state.lists[listOrder].cards.length)
-          {
-            // remove card from original position
-            const listIndex = state.lists.findIndex(list => list.id === draggedCard.listId)
-            state.lists[listIndex].cards = state.lists[listIndex].cards.filter(((card) => card.id !== draggedCard.id))
-            
-            // insert card to new position
-            draggedCard.listId = state.lists[listOrder].id
-            if (cardOrder < state.lists[listOrder].cards.length)
-              state.lists[listOrder].cards.splice(cardOrder, 0, draggedCard)
-            else
-              state.lists[listOrder].cards.push(draggedCard)
+          if (cardOrder < state.lists[listOrder].cards.length && state.lists[listOrder].cards[cardOrder].id === draggedCard.id)
+            return
+          
+          // remove card from original position
+          const listIndex = state.lists.findIndex(list => list.id === draggedCard.listId)
+          state.lists[listIndex].cards = state.lists[listIndex].cards.filter(((card) => card.id !== draggedCard.id))
+          
+          // insert card to new position
+          const newCard = Object.assign({}, draggedCard)
+          newCard.listId = state.lists[listOrder].id
+          if (cardOrder < state.lists[listOrder].cards.length)
+            state.lists[listOrder].cards.splice(cardOrder, 0, newCard)
+          else
+            state.lists[listOrder].cards.push(newCard)
 
-            // state.draggedItem = null
-          }  
+          // state.draggedItem = null
+          
         },
     }
 })
 
 // export actions
-export const { createList, updateList, updateListTitle, archiveList, removeList, addCard, removeCard, updateCardTitle, dragCard, dropCard, insertCard} = trelloListSlice.actions;
+export const { addList, updateList, updateListTitle, archiveList, removeList,insertList, addCard, removeCard, updateCardTitle, dragCard, dropCard, insertCard} = trelloListSlice.actions;
 
 export const selectListData = (state) => {
   // console.log("state:",state.trelloList)
   return state.trelloList
-}
-export const selectDraggedCard = (state) => {
-  return state.trelloList.draggedCard
 }
 // export const selectListOrder = (state) => state.trelloList.listOrder
 

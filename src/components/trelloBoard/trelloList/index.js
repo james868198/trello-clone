@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { addCard, updateListTitle, removeList, dragCard, dropCard, insertCard, selectDraggedCard } from '../../../store/slice/trelloListSlice';
+import { addCard, updateListTitle, removeList } from '../../../store/slice/trelloListSlice';
 
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
@@ -47,16 +47,15 @@ width: 100%;
   }
 `
 
-export default function TrelloList({list, order}) {
+export default function TrelloList({list, order, ...props}) {
   
 
   const [titleEditable, setTitleEditable] = useState(false)
   const [newListTitle, setNewListTitle] = useState('')
-  const [draggable, setDraggable] = useState(true)
 
   const dispatch = useDispatch();  
-  const draggedCard = useSelector(selectDraggedCard)
-
+  const {handleOnDragStart, handleOnDragEnd, handleOnDragEnter, isCardDragged} = props
+  
   if (!list)
     return
 
@@ -107,82 +106,6 @@ export default function TrelloList({list, order}) {
     setTitleEditable(false)
   }
 
-  // drag card
-  const handleOnDragStart = (e, card) => {
-    // e.preventDefault();
-    if (card === draggedCard)
-      return
-    const inputData = {
-      card: card
-    }
-    console.log('handleOnDragStart', inputData)
-    dispatch(dragCard(inputData))
-  }
-
-  const handleOnDragEnd = (e) => {
-    e.preventDefault();
-    if (draggedCard) {
-      console.log('handleOnDragEnd', draggedCard.id)
-      dispatch(dropCard())
-    }
-  }
-
-  const handleOnDrop = (e) => {
-    e.preventDefault();
-    const inputData = {
-      listOrder: order,
-      Y: e.clientX,
-      X: e.clientY
-    }
-    console.log('handleOnDrop', inputData)
-    // // dispatch(dropCard())
-    // dispatch(insertCard(inputData))
-
-  }
-  const handleOnDragOver = (e) => {
-    // e.preventDefault();
-    // const selectedIndex = e.target.options.selectedIndex;
-    // console.log('handleOnDrop Over', e.target.options)
-    // if (selectedIndex >= 0)
-    //   e.target.style.backgroundColor = '#41ce00'
-  }
-
-  const handleOnDragEnter = (e, index) => {
-    if (draggedCard == null || list.cards[index].id === draggedCard.id || !draggable)
-      return
-    
-    // get box height and width
-    const box = e.target.getBoundingClientRect()
-
-    let cardIndex = index
-
-    // check if the Y of the dragged card higher than the middle of the box
-    if (e.clientY > box.top + box.height / 2) {
-      cardIndex ++
-    } 
-    console.log('handleOnDragEnter', list.cards[index].id, draggedCard.id)
-    if (cardIndex < list.cards.length && list.cards[cardIndex].id === draggedCard.id)
-      return
-
-    // temperately disable draggle
-    setDraggable(false)
-    setTimeout(() => {
-      setDraggable(true)
-    }, 200);
-
-    // update card position
-    const inputData = {
-      listOrder: order,
-      cardOrder: index,
-    }
-    dispatch(insertCard(inputData))
-  }
-
-  const isDragged = (card) => {
-    if (card && draggedCard)
-      return card.id === draggedCard.id
-    return false
-  }
   const TrelloListTitle = () => {
     if (titleEditable)
       return (<CssTextField value={newListTitle} onChange={handleEditListTitle} onBlur={handleChangeListTitle} autoFocus/>)
@@ -199,7 +122,13 @@ export default function TrelloList({list, order}) {
         <CardsWrapper   >
           {list.cards.map((card, index) => {
             return (
-              <TrelloCardWrapper dragged={isDragged(card)} key={index} draggable onDragEnd={handleOnDragEnd}  onDragEnter={event => handleOnDragEnter(event, index)} onDragStart={event => handleOnDragStart(event, card)} >
+              <TrelloCardWrapper 
+                dragged={isCardDragged(card)} 
+                draggable
+                key={index} 
+                onDragEnd={event => handleOnDragEnd(event)}  
+                onDragEnter={event => handleOnDragEnter(event, index, order)} 
+                onDragStart={event => handleOnDragStart(event, card, 'card')} >
                 <TrelloCard card={card} order={index} listOrder={order} /> 
               </TrelloCardWrapper>
             )

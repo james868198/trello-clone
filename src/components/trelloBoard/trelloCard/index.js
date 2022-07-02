@@ -129,7 +129,7 @@ export default function TrelloCard({card, ...props}) {
     const [showEditTitleModal, setShowEditTitleModal] = useState(false);
     const [newTitle, setNewTitle] = useState("");
 
-    const {order, listOrder, MouseIn} = props
+    const {order, listOrder} = props
 
     const dispatch = useDispatch();  
     
