@@ -25,8 +25,6 @@ export const Section = styled.div`
 position: relative;
 width: 100%;
 height: 30px;
-padding-left:10px;
-padding-right:10px;
 flex-wrap: nowrap;
 display: flex;
 flex-direction: row;
@@ -36,6 +34,7 @@ align-items: center;
 
 export const TitleContainer = styled.span`
 position: relative;
+margin-left: 10px;
 width: 80%;
 text-overflow: ellipsis;
 white-space: nowrap;
@@ -45,7 +44,8 @@ text-align:left;
 
 
 export const IconContainer = styled.span`
-position: relative;
+position: absolute;
+right: -10px;
 border-radius: 3px;
 margin-right: 15px;
 display: none;
@@ -202,7 +202,7 @@ export default function TrelloCard({card, ...props}) {
             <TitleContainer>
                 {card.title}
             </TitleContainer>
-            <IconContainer className="showIcon" onClick={handleShowEditTitleModal}>
+            <IconContainer onClick={handleShowEditTitleModal}>
                 <EditIcon/>
             </IconContainer>
             

@@ -89,9 +89,9 @@ export const trelloListSlice = createSlice({
             list.cards.filter(card => card.cardId !== cardId)
         },
         insertCard: (state, action) => {
-          const { listOrder, cardOrder, draggedCard } = action.payload
+          const { listOrder, cardOrder, draggedCard, newCard} = action.payload
 
-          if (draggedCard == null || listOrder >= state.lists.length)
+          if (draggedCard == null || newCard == null || listOrder >= state.lists.length)
             return
 
           if (cardOrder < state.lists[listOrder].cards.length && state.lists[listOrder].cards[cardOrder].id === draggedCard.id)
@@ -102,8 +102,6 @@ export const trelloListSlice = createSlice({
           state.lists[listIndex].cards = state.lists[listIndex].cards.filter(((card) => card.id !== draggedCard.id))
           
           // insert card to new position
-          const newCard = Object.assign({}, draggedCard)
-          newCard.listId = state.lists[listOrder].id
           if (cardOrder < state.lists[listOrder].cards.length)
             state.lists[listOrder].cards.splice(cardOrder, 0, newCard)
           else

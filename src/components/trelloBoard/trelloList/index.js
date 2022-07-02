@@ -17,6 +17,15 @@ import TrelloCard from '../trelloCard';
 
 import styled from 'styled-components';
 
+export const TrelloListContainer = styled(Card)`
+overflow: hidden;
+`
+
+export const TrelloListDraggedContainer = styled(TrelloListContainer)`
+overflow-y: auto;
+overflow-x: hidden;
+`
+
 export const CardsWrapper = styled.div`
 display: flex;
 flex-direction: column;
@@ -54,7 +63,7 @@ export default function TrelloList({list, order, ...props}) {
   const [newListTitle, setNewListTitle] = useState('')
 
   const dispatch = useDispatch();  
-  const {handleOnDragStart, handleOnDragEnd, handleOnDragEnter, isCardDragged} = props
+  const {handleOnDragStart, handleOnDragEnd, handleCardOnDragEnter, draggedCard, draggedList} = props
   
   if (!list)
     return
@@ -106,6 +115,18 @@ export default function TrelloList({list, order, ...props}) {
     setTitleEditable(false)
   }
 
+  const isListDragged = (list) => {
+    if (list && draggedList)
+      return list.id === draggedList.id
+    return false
+  }
+
+  const isCardDragged = (card) => {
+    if (card && draggedCard)
+      return card.id === draggedCard.id
+    return false
+  }
+
   const TrelloListTitle = () => {
     if (titleEditable)
       return (<CssTextField value={newListTitle} onChange={handleEditListTitle} onBlur={handleChangeListTitle} autoFocus/>)
@@ -114,12 +135,12 @@ export default function TrelloList({list, order, ...props}) {
   }
 
   return (
-    <Card sx={{ width: 1, backgroundColor: "#FAFAFA"}}  >
-      <CardContent>
+    <TrelloListContainer draggable sx={{ width: 1, backgroundColor: "#FAFAFA"}} >
+      <CardContent >
         <Typography sx={{ fontSize: 24, cursor: 'pointer' }}  align='left' color="text.secondary" variant='h3' gutterBottom onDoubleClick={handleShowEditTitleField}>
           <TrelloListTitle/>
         </Typography>
-        <CardsWrapper   >
+        <CardsWrapper>
           {list.cards.map((card, index) => {
             return (
               <TrelloCardWrapper 
@@ -127,7 +148,7 @@ export default function TrelloList({list, order, ...props}) {
                 draggable
                 key={index} 
                 onDragEnd={event => handleOnDragEnd(event)}  
-                onDragEnter={event => handleOnDragEnter(event, index, order)} 
+                onDragEnter={event => handleCardOnDragEnter(event, index, order)} 
                 onDragStart={event => handleOnDragStart(event, card, 'card')} >
                 <TrelloCard card={card} order={index} listOrder={order} /> 
               </TrelloCardWrapper>
@@ -139,7 +160,7 @@ export default function TrelloList({list, order, ...props}) {
         <Button size="small" startIcon={<AddIcon />} onClick={handleAddCard}>Add Card</Button>
         <Button size="small" startIcon={<RemoveIcon />}onClick={handleRemoveList}>Remove list</Button>
       </CardActions>
-    </Card>
+    </TrelloListContainer>
   )
     
 }

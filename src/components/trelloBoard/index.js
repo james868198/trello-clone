@@ -25,7 +25,7 @@ padding: 10px;
 
 `
 
-export const TrelloListContainer = styled.div`
+export const TrelloBoardContent = styled.div`
 position: relative;
 width: 100%;
 flex-grow: 1;
@@ -34,21 +34,22 @@ overflow-y: scroll;
 
 `
 
-export const ListWrapper = styled.div`
-// min-height: 500px;
+export const TrelloBoardContentContainer = styled.div`
 position: relative;
 height: 100%;
-padding: 10px 0px 10px 0px;
+padding: 16px;
 display: flex;
-
 flex-direction: row;
 justify-content: start;
+gap: 16px;
 `
 
-export const TrelloListWrapper = styled.span`
+export const TrelloListWrapper = styled.div`
+display: inline;
+min-height: 320px;
 min-width: 275px;
 width: 275px;
-padding: 10px;
+// margin: 10px;
 
 `
 
@@ -79,15 +80,37 @@ export default function TrelloBoard() {
   };
 
   // dnd
+  const insertCardToStore = (listIndex, cardIndex = 1) => {
+    // update card position
+    if (listIndex == null || draggedCard == null)
+      return
+
+    let newCard = draggedCard
+    if (lists[listIndex].id !== draggedCard.listid) {
+      newCard = Object.assign({}, draggedCard)
+      newCard.listId = lists[listIndex].id
+    }
+    setDraggedCard(newCard)
+    const inputData = {
+      listOrder: listIndex,
+      cardOrder: cardIndex,
+      draggedCard: draggedCard,
+      newCard: newCard
+    }
+    dispatch(insertCard(inputData))
+    // setDraggedCard(null)
+  }
 
   const handleOnDragStart = (e, item, type) => {
     e.stopPropagation();
     // console.log('handleOnDragStart', type, item)
-    if (type === 'card') {
+    // console.log(e.target)
+
+    if (type === 'card' && draggedList == null) {
       if (item === draggedCard)
         return
       setDraggedCard(item);
-    } else if (type === 'list') {
+    } else if (type === 'list' && draggedCard == null) {
       if (item === draggedList)
         return
       setDraggedList(item);
@@ -103,12 +126,21 @@ export default function TrelloBoard() {
       setDraggedList(null);
   }
 
+  const handleOnDrop = (e) => {
+    e.stopPropagation();
+    // console.log('handleOnDrop', draggedCard)
+    if (draggedCard) 
+      setDraggedCard(null);
+    if (draggedList)
+      setDraggedList(null);
+  }
+
   
   const handleCardOnDragEnter = (e, index, ListOrder) => {
-    // console.log('handleOnDragEnter draggedCard:', draggedCard)
     e.stopPropagation();
+    // console.log('handleOnDragEnter draggedCard:', draggedCard)
 
-    if (draggedCard == null || !draggable)
+    if (draggedCard == null || !draggable || draggedList != null)
       return
     const list = lists[ListOrder];
     
@@ -123,7 +155,7 @@ export default function TrelloBoard() {
     if (e.clientY > box.top + box.height / 2) {
       cardIndex ++
     } 
-    console.log('handleOnDragEnter', list.cards[index].id, draggedCard.id)
+    // console.log('handleOnDragEnter', list.cards[index].id, draggedCard.id)
     if (cardIndex < list.cards.length && list.cards[cardIndex].id === draggedCard.id)
       return
 
@@ -131,22 +163,24 @@ export default function TrelloBoard() {
     setDraggable(false)
     setTimeout(() => {
       setDraggable(true)
-    }, 200);
+    }, 100);
 
     // update card position
-    const inputData = {
-      listOrder: ListOrder,
-      cardOrder: index,
-      draggedCard: draggedCard
-    }
-    dispatch(insertCard(inputData))
+    insertCardToStore(ListOrder, index)
   }
 
   const handleListOnDragEnter = (e, index) => {
-
     e.stopPropagation();
-    if (draggedList == null || !draggable)
+    // console.log('handleListOnDragEnter target:', e.target  
+
+    if (draggedList == null || !draggable || draggedCard != null) {
+      // update card if card list is empty. [TODO]: move logic to another place
+      if (draggable && draggedCard && lists[index].cards.length === 0) {
+        insertCardToStore(index)
+      }
       return
+    }
+
     const box = e.target.getBoundingClientRect()
 
     let ListIndex = index
@@ -162,7 +196,7 @@ export default function TrelloBoard() {
     setDraggable(false)
     setTimeout(() => {
       setDraggable(true)
-    }, 200);
+    }, 100);
      
     // update store
     const inputData = {
@@ -173,45 +207,48 @@ export default function TrelloBoard() {
 
   }
 
-  const isCardDragged = (card) => {
-    if (card && draggedCard)
-      return card.id === draggedCard.id
-    return false
+  // components
+ 
+  const CreateListBtn = () => {
+    return (
+      <TrelloListWrapper>
+        <Button fullWidth variant="contained" onClick={handleAddList}>Create list</Button>
+      </TrelloListWrapper>
+    )
   }
   
   return (
-      
       <TrelloBoardContainer>
         <TrelloBoardHeader>
           <h1>trello board: {boardId} </h1>
         </TrelloBoardHeader>
-        <TrelloListContainer>
-          <ListWrapper>
+        <TrelloBoardContent>
+          <TrelloBoardContentContainer>
             {lists.map((list, index) => {
-              return (
-                <TrelloListWrapper
-                  draggable 
-                  key={list.id} 
-                  onDragEnd={event => handleOnDragEnd(event)}
-                  onDragEnter={event => handleListOnDragEnter(event, index)}
-                  onDragStart={event => handleOnDragStart(event, list, 'list')}>
-                  <TrelloList 
+                return (
+                  <TrelloListWrapper 
                     key={list.id} 
-                    list={list} 
-                    order={index} 
-                    isCardDragged = {isCardDragged}
-                    handleOnDragStart={handleOnDragStart}
-                    handleOnDragEnd={handleOnDragEnd}
-                    handleOnDragEnter={handleCardOnDragEnter}
-                    />
-                </TrelloListWrapper>
-              )
-            })}
-            <TrelloListWrapper>
-              <Button fullWidth variant="contained" onClick={handleAddList}>Create list</Button>
-            </TrelloListWrapper>
-          </ListWrapper>
-        </TrelloListContainer>
+                    onDragEnd={event => handleOnDragEnd(event)}  
+                    onDragEnter={event => handleListOnDragEnter(event, index)} 
+                    onDragStart={event => handleOnDragStart(event, list, 'list')}
+                    onDrop={event => handleOnDrop(event)}
+                    >
+                    <TrelloList                     
+                      key={list.id} 
+                      list={list} 
+                      order={index} 
+                      draggedCard = {draggedCard}
+                      draggedList = {draggedList}
+                      handleOnDragStart={handleOnDragStart}
+                      handleOnDragEnd={handleOnDragEnd}
+                      handleCardOnDragEnter={handleCardOnDragEnter}
+                      />
+                  </TrelloListWrapper>
+                )
+              })}
+            <CreateListBtn/>
+          </TrelloBoardContentContainer>
+        </TrelloBoardContent>
         
       </TrelloBoardContainer>
   )
