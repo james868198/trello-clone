@@ -2,27 +2,28 @@ import React, {useEffect, useState} from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useParams } from "react-router-dom";
 import TrelloList from './trelloList';
+import TrelloBoardNav from './trelloBoardNav';
+
 import styled from 'styled-components';
 import { addList, selectListData, insertCard, insertList } from '../../store/slice/trelloListSlice';
 import Button from '@mui/material/Button';
+import AddIcon from '@mui/icons-material/Add';
 
 export const TrelloBoardContainer = styled.div`
 position: relative;
 width: 100%;
 height: 100%;
-background-color: #1182cd;
+background-color: ${props => props.theme.palette.primary.dark};
 display: flex;
 flex-direction: column;
+color: ${props => props.theme.palette.primary.contrastText};
 `
 
 export const TrelloBoardHeader = styled.div`
 display:inline-block;
 position: relative;
 width: 100%;
-height: 70px;
-background-color: #64ddef;
-padding: 10px;
-
+max-height: 70px;
 `
 
 export const TrelloBoardContent = styled.div`
@@ -212,7 +213,23 @@ export default function TrelloBoard() {
   const CreateListBtn = () => {
     return (
       <TrelloListWrapper>
-        <Button fullWidth variant="contained" onClick={handleAddList}>Create list</Button>
+        <Button
+          sx={{
+            textAlign: 'left', 
+            backgroundColor: 'primary.light', 
+            color: 'white', textTransform: 
+            'capitalize',
+            fontFamily: 'Helvetica Neue',
+            '&:hover': {
+              backgroundColor: 'info.light',
+            },
+          }}
+          fullWidth 
+          onClick={handleAddList}
+          startIcon={<AddIcon/>}
+        >
+          Add another list
+        </Button>
       </TrelloListWrapper>
     )
   }
@@ -220,7 +237,7 @@ export default function TrelloBoard() {
   return (
       <TrelloBoardContainer>
         <TrelloBoardHeader>
-          <h1>trello board: {boardId} </h1>
+          <TrelloBoardNav title={`trello-board-${boardId}`}/>
         </TrelloBoardHeader>
         <TrelloBoardContent>
           <TrelloBoardContentContainer>
