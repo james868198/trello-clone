@@ -34,7 +34,9 @@ const theme = createTheme({
       main: blue[300],
       dark: blue[500],
       contrastText: '#fff',
-    }
+    },
+    bg: blue[900],
+    test: '#000000'
   },
   // button: {
   //   textTransform: 'none'

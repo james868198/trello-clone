@@ -3,7 +3,6 @@
   height: 100vh;
   /* margin: 0 auto; */
   overflow: hidden;
-  background-color: #282c34;
 }
 
 
@@ -15,7 +14,6 @@
 }
 
 .App-header {
-  background-color: #282c34;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -27,6 +25,11 @@
 
 .App-link {
   color: #61dafb;
+}
+
+a {
+  text-decoration: none;
+  color: rgb(0, 0, 0);
 }
 
 @keyframes App-logo-spin {

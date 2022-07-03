@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useParams } from "react-router-dom";
 import styled from 'styled-components';
+import NavButton from '../../common/NavButton';
 
 // mui
 import Button from '@mui/material/Button';
@@ -67,21 +68,7 @@ export default function TrelloBoardNav({title, ...props}) {
     const BoardNavBtn = (props) => {
         return (
             <Section>
-                <Button 
-                    size="large"
-                    sx={{
-                        backgroundColor: 'primary.light',
-                        color: 'white', 
-                        textTransform: 'capitalize',
-                        fontFamily: 'Helvetica Neue',
-                        maxHeight: '2.5rem',
-                        '&:hover': {
-                            backgroundColor: 'info.light',
-                        }, 
-                    }} 
-                    {...props}>
-                {props.children}
-                </Button>
+                <NavButton {...props}>{props.children}</NavButton>
             </Section>
         );
     };

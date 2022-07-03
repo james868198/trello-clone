@@ -1,8 +1,174 @@
-const Header = () => {
+import React, {useEffect, useState} from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import styled from 'styled-components';
+import NavButton from '../../common/NavButton';
+import SearchBar from '../../common/SearchBar';
+import {Link} from "react-router-dom"
+import SvgIcon, { SvgIconProps } from '@mui/material/SvgIcon';
+
+// mui
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import AppsIcon from '@mui/icons-material/Apps';
+import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import AccountBoxIcon from '@mui/icons-material/AccountBox';
+
+export const Container = styled.div`
+background-color: ${props => props.theme.palette.bg};
+color: ${props => props.theme.palette.primary.contrastText};
+
+position: relative;
+width: 100%;
+display: flex;
+flex-direction: row;
+flex-wrap: wrap;
+justify-content: space-between;
+align-items:center;
+
+`
+
+export const ContainerLeft = styled.div`
+position: relative;
+width: 50%;
+display: inline-flex;
+flex-direction: row;
+justify-content: flex-start;
+align-items: inherit;
+`
+export const ContainerRight = styled.div`
+position: relative;
+width: 40%;
+display: inline-flex;
+flex-direction: row;
+justify-content: flex-end;
+align-items: inherit;
+`
+
+export const Section = styled.div`
+display: inline-flex;
+position: relative;
+margin: 5px;
+`
+
+export default function Header({title, ...props}) {
+
+    // states
+
+
+    // components 
+    const Icon = (props) => {
+        return (
+            <Section>
+                <SvgIcon sx={{ fontSize: 30 }}>
+                    {props.children}
+                </SvgIcon>
+            </Section>
+        );
+    }
+    const BoardNavBtn = (props) => {
+        return (
+            <Section>
+                <NavButton sx={{
+                    color: 'white', 
+                    whiteSpace: 'nowrap',
+                    textTransform: 'capitalize',
+                    fontFamily: 'Helvetica Neue',
+                    '&:hover': {
+                        backgroundColor: 'info.light',
+                    }, 
+                }} 
+                {...props}>
+                    {props.children}
+                </NavButton>
+            </Section>
+        );
+    };
+
+    const Apps = () => {
+        return (
+           <Icon><AppsIcon/></Icon>
+        );
+    };
+
+    const HomeIcon = () => {
+        return (    
+            <Link to={"/"}>
+                <Section><h3 style={{color: 'white'}}>Trello</h3></Section>
+            </Link>
+        );
+    };
+    const Workspaces = () => {
+        return (
+            <BoardNavBtn endIcon={<KeyboardArrowDownIcon />}>Workspaces</BoardNavBtn>
+        )
+    };
+    const Starred = () => {
+        return (
+            <BoardNavBtn endIcon={<KeyboardArrowDownIcon />}>Starred</BoardNavBtn>
+        )
+    };
+
+    const Templates = () => {
+        return (
+            <BoardNavBtn endIcon={<KeyboardArrowDownIcon />}>Templates</BoardNavBtn>
+        )
+    };
+
+    const Create = () => {
+        return (
+            <BoardNavBtn>Create</BoardNavBtn>
+        )
+    };
+
+    const Search = () => {
+        return (
+            <Section><SearchBar/></Section>
+        )
+    };
+
+    const Information = () => {
+        return (
+            <Icon><InfoOutlinedIcon/></Icon>
+        )
+    };
+
+    const Notification = () => {
+        return (
+            <Icon><NotificationsNoneIcon/></Icon>
+        )
+    };
+
+    const Profile = () => {
+        return (
+            <Icon><AccountBoxIcon/></Icon>
+        )
+    };
+
+   
+
+    // handlers
+
+    const handleSearch = () => {
+
+    };
+
     return (
-        <div>
-            Header
-        </div>
-    )
+        <Container>
+            <ContainerLeft>
+                <Apps/>
+                <HomeIcon/>
+                <Workspaces/>
+                <Starred/>
+                <Templates/>
+                <Create/>
+            </ContainerLeft>
+            <ContainerRight>
+                <Search/>
+                <Information/>
+                <Notification/>
+                <Profile/>
+            </ContainerRight>
+        </Container>
+    );
 }
-export default Header
+

@@ -3,10 +3,9 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useParams } from "react-router-dom";
 import TrelloList from './trelloList';
 import TrelloBoardNav from './trelloBoardNav';
-
+import NavButton from '../common/NavButton';
 import styled from 'styled-components';
 import { addList, selectListData, insertCard, insertList } from '../../store/slice/trelloListSlice';
-import Button from '@mui/material/Button';
 import AddIcon from '@mui/icons-material/Add';
 
 export const TrelloBoardContainer = styled.div`
@@ -213,23 +212,13 @@ export default function TrelloBoard() {
   const CreateListBtn = () => {
     return (
       <TrelloListWrapper>
-        <Button
-          sx={{
-            textAlign: 'left', 
-            backgroundColor: 'primary.light', 
-            color: 'white', textTransform: 
-            'capitalize',
-            fontFamily: 'Helvetica Neue',
-            '&:hover': {
-              backgroundColor: 'info.light',
-            },
-          }}
+        <NavButton
           fullWidth 
           onClick={handleAddList}
           startIcon={<AddIcon/>}
         >
           Add another list
-        </Button>
+        </NavButton>
       </TrelloListWrapper>
     )
   }

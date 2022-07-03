@@ -17,7 +17,7 @@ height: 100%;
 const Layout = () => {
   return (
       <Main>
-        {/* <Header /> */}
+        <Header />
         {/* <div className="content"> */}
         <Outlet />
         {/* </div> */}
