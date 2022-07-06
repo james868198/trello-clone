@@ -5,12 +5,7 @@ export default function NavButton(props) {
         <Button 
             size="large"
             sx={{
-                backgroundColor: 'primary.light',
-                color: 'white', 
-                whiteSpace: 'nowrap',
-                textTransform: 'capitalize',
-                fontFamily: 'Helvetica Neue',
-                maxHeight: '2.5rem',
+                backgroundColor: 'primary.main',                
                 '&:hover': {
                     backgroundColor: 'info.light',
                 }, 

@@ -4,14 +4,17 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import theme from './theme';    
-import { ThemeProvider } from "styled-components";
+import { ThemeProvider as StyleThemeProvider } from "styled-components";
+import { ThemeProvider as MuiThemeProvider} from '@mui/material/styles';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <ThemeProvider theme={theme}>
-      <App />
-    </ThemeProvider>
+    <StyleThemeProvider theme={theme}>
+      <MuiThemeProvider theme={theme}>
+        <App />
+      </MuiThemeProvider>
+    </StyleThemeProvider>
   </React.StrictMode>
 );
 

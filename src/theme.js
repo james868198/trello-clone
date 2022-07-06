@@ -38,10 +38,19 @@ const theme = createTheme({
     bg: blue[900],
     test: '#000000'
   },
-  // button: {
-  //   textTransform: 'none'
-  //   // textTransform: 'capitalize'
-  // }
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          color: 'white',
+          whiteSpace: 'nowrap',
+          textTransform: 'none',
+          fontFamily: 'Helvetica Neue',
+          maxHeight: '2.5rem',
+        },
+      },
+    },
+  },
 });
 
 export default theme;

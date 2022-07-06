@@ -73,6 +73,7 @@ export default function Header({title, ...props}) {
                     whiteSpace: 'nowrap',
                     textTransform: 'capitalize',
                     fontFamily: 'Helvetica Neue',
+                    maxHeight: '2.5rem',
                     '&:hover': {
                         backgroundColor: 'info.light',
                     }, 
