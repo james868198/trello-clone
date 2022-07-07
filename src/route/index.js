@@ -11,11 +11,11 @@ const AppRouter = () => {
           <Routes element={<Layout/>}>
             <Route path="/" element={<Layout />}>
               <Route index element={<Home />} />
-              <Route path="/boards">
+              <Route path="/b">
                 <Route path=":boardId" element={<TrelloBoard />} />
               </Route>
+              <Route path="*" element={<NotFound />} />
             </Route>
-            <Route path="*" element={<NotFound />} />
           </Routes>
         </Router>
     );
