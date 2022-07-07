@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import {Link} from "react-router-dom";
-import { createBoard, archiveBoard, selectBoards } from '../store/slice/trelloBoardSlice';
+import { createBoard, archiveBoard, getBoards } from '../store/slice/trelloBoardSlice';
 
 // mui
 import Paper from '@mui/material/Paper'
@@ -49,13 +49,11 @@ padding: 10px;
 
 export const Card = (board) => {
     return (
-        <Link to={`boards/${board.boardId}`}>
-            <CardContainer key={board.boardId}>
-                
+        <Link to={`b/${board.boardId}`} key={board.boardId}>
+            <CardContainer>
                 <CardTitle>
                     <h3>#{board.boardId}. {board.name}</h3>
                 </CardTitle>
-                
             </CardContainer>
         </Link>
     )
@@ -66,7 +64,7 @@ export default function Boards (props) {
     const dispatch = useDispatch();  
     
     const handleCreateBoard = () => dispatch(createBoard())
-    const boards = useSelector(selectBoards)
+    const boards = useSelector(getBoards)
     const CreateBoardBtn = () => {
         return (
             <CardBtnContainer onClick={handleCreateBoard}>

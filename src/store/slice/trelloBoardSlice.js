@@ -9,8 +9,7 @@ const initialState = {
       lists: [],
       archived: false
     }, 
-  },
-  editingBoard: null
+  }
 };
 
 export const trelloBoardsSlice = createSlice({
@@ -72,8 +71,8 @@ export const trelloBoardsSlice = createSlice({
 export const { createBoard, updateBoard, archiveBoard, removeBoard, addListToBoard, removeListFromBoard, editBoard } = trelloBoardsSlice.actions;
 
 // select board
-export const selectBoards = (state) => Object.values(state.trelloBoard.boards)
-export const selectBoard = (state) => state.trelloBoard.editingBoard
+export const getBoards = (state) => Object.values(state.trelloBoard.boards)
+export const getBoardById = (boardId) => (state) => state.trelloBoard.boards.hasOwnProperty(boardId)? state.trelloBoard.boards[boardId] : null
 
 //export reducer
 export default trelloBoardsSlice.reducer;

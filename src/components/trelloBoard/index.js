@@ -1,11 +1,14 @@
 import React, {useEffect, useState} from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { useParams } from "react-router-dom";
+import { useParams, Navigate } from "react-router-dom";
+
 import TrelloList from './trelloList';
 import TrelloBoardNav from './trelloBoardNav';
 import NavButton from '../common/NavButton';
 import styled from 'styled-components';
 import { addList, selectListData, insertCard, insertList } from '../../store/slice/trelloListSlice';
+import { getBoardById } from '../../store/slice/trelloBoardSlice';
+
 import AddIcon from '@mui/icons-material/Add';
 
 export const TrelloBoardContainer = styled.div`
@@ -62,10 +65,14 @@ export default function TrelloBoard() {
   const [draggedList, setDraggedList] = useState(null)
 
   const dispatch = useDispatch(); 
-
-  let { boardId } = useParams();
-  
+  const { boardId } = useParams();
+  const board = useSelector(getBoardById(boardId));
   const listData = useSelector(selectListData)
+
+  if (board == null) {
+    return <Navigate to="/404" />
+  }
+
   const lists = listData.lists
   
   // handlers
