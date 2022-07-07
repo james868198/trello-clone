@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import styled from 'styled-components';
-import NavButton from '../../common/NavButton';
 import SearchBar from '../../common/SearchBar';
 import {Link} from "react-router-dom"
 import SvgIcon, { SvgIconProps } from '@mui/material/SvgIcon';
@@ -12,9 +11,11 @@ import AppsIcon from '@mui/icons-material/Apps';
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
+import Button from '@mui/material/Button';
+import IconButton from '@mui/material/IconButton';
 
 export const Container = styled.div`
-background-color: ${props => props.theme.palette.bg};
+background-color: ${props => props.theme.palette.background.dark};
 color: ${props => props.theme.palette.primary.contrastText};
 
 position: relative;
@@ -59,28 +60,29 @@ export default function Header({title, ...props}) {
     const Icon = (props) => {
         return (
             <Section>
-                <SvgIcon sx={{ fontSize: 30 }}>
+                <IconButton sx={{
+                    fontSize: 30,
+                    '&:hover': {
+                        backgroundColor: '#6595bd',
+                    }, 
+                }}>
                     {props.children}
-                </SvgIcon>
+                </IconButton>
             </Section>
         );
     }
     const BoardNavBtn = (props) => {
         return (
             <Section>
-                <NavButton sx={{
+                <Button sx={{
                     color: 'white', 
-                    whiteSpace: 'nowrap',
-                    textTransform: 'capitalize',
-                    fontFamily: 'Helvetica Neue',
-                    maxHeight: '2.5rem',
                     '&:hover': {
-                        backgroundColor: 'info.light',
+                        backgroundColor: '#6595bd',
                     }, 
                 }} 
                 {...props}>
                     {props.children}
-                </NavButton>
+                </Button>
             </Section>
         );
     };

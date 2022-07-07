@@ -1,5 +1,7 @@
 import { createTheme } from '@mui/material/styles';
-import { lightBlue, blue } from '@mui/material/colors';
+import { red, orange, yellow, green, lightBlue, blue, grey } from '@mui/material/colors';
+
+const BORDER_RADIUS = '4px';
 
 const theme = createTheme({      
   typography: {
@@ -15,8 +17,13 @@ const theme = createTheme({
       '"Segoe UI Emoji"',
       '"Segoe UI Symbol"',
     ].join(','),
+    fontSize: "16",
+    // body1: {
+     
+    // }
   },
   palette: {
+    mode: 'light',
     primary: {
       light: blue[200],
       main: blue[600],
@@ -24,19 +31,56 @@ const theme = createTheme({
       contrastText: '#fff',
     },
     secondary: {
-      light: lightBlue[200],
-      main: lightBlue[600],
-      dark: lightBlue[700],
-      contrastText: '#fff',
+      light: red[500],
+      main: red[700],
+      dark: red[900],
+      contrastText: grey[50]
+    },
+    error: {
+      light: red[400],
+      main: red[500],
+      dark: red[300],
+      contrastText: grey[800]
+    },
+    success: {
+      main: green[500]
+    },
+    warning: {
+      main: yellow[500],
+      contrastText: grey[800]
     },
     info: {
-      light: blue[50],
-      main: blue[300],
-      dark: blue[500],
-      contrastText: '#fff',
+      main: lightBlue[500]
     },
-    bg: blue[900],
-    test: '#000000'
+    text: {
+      primary: grey[900],
+      secondary: grey[700],
+      disabled: grey[500]
+    },
+    action: {
+      active: '#FFFFFF',
+      activeOpacity: 1,
+      disabled: grey[700],
+      disabledBackground: grey[200],
+      hover: red[100],
+      hoverOpacity: 0.7,
+      focus: red[600],
+      focusOpacity: 1,
+      selected: red[300],
+      selectedOpacity: 1
+    },
+    background: {
+      default: 'white',
+      main: '#0379bf',
+      dark: '#036aa7',
+      paper: grey[200],
+      text: 'black'
+    },
+    common: {
+      black: grey[900],
+      white: grey[200]
+    },
+    tonalOffset: 0.2
   },
   components: {
     MuiButton: {
@@ -47,9 +91,17 @@ const theme = createTheme({
           textTransform: 'none',
           fontFamily: 'Helvetica Neue',
           maxHeight: '2.5rem',
+          borderRadius: BORDER_RADIUS,
         },
       },
     },
+    MuiIconButton:{
+      styleOverrides: {
+        root: {
+          borderRadius: BORDER_RADIUS,
+        },
+      },
+    }
   },
 });
 

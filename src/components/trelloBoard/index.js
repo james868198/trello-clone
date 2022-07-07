@@ -4,18 +4,19 @@ import { useParams, Navigate } from "react-router-dom";
 
 import TrelloList from './trelloList';
 import TrelloBoardNav from './trelloBoardNav';
-import NavButton from '../common/NavButton';
 import styled from 'styled-components';
 import { addList, selectListData, insertCard, insertList } from '../../store/slice/trelloListSlice';
 import { getBoardById } from '../../store/slice/trelloBoardSlice';
 
+// mul
 import AddIcon from '@mui/icons-material/Add';
+import Button from '@mui/material/Button';
 
 export const TrelloBoardContainer = styled.div`
 position: relative;
 width: 100%;
 height: 100%;
-background-color: ${props => props.theme.palette.primary.dark};
+background-color: ${props => props.theme.palette.background.main};
 display: flex;
 flex-direction: column;
 color: ${props => props.theme.palette.primary.contrastText};
@@ -219,13 +220,20 @@ export default function TrelloBoard() {
   const CreateListBtn = () => {
     return (
       <TrelloListWrapper>
-        <NavButton
+        <Button
+            sx={{
+              color: 'white', 
+              backgroundColor: '#359ad4',
+              '&:hover': {
+                  backgroundColor: '#4da1d2',
+              }, 
+          }}
           fullWidth 
           onClick={handleAddList}
           startIcon={<AddIcon/>}
         >
           Add another list
-        </NavButton>
+        </Button>
       </TrelloListWrapper>
     )
   }
