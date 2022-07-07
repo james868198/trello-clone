@@ -4,12 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { updateCardTitle } from '../../../store/slice/trelloListSlice';
 import styled from 'styled-components';
 import EditIcon from '@mui/icons-material/Edit';
-
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
-
-
-
+import TextModal from './TextModal';
 
 export const Status = styled.div`
 position: relative;
@@ -54,56 +49,7 @@ display: none;
 }
 `
 
-export const Modal = styled.div`
-position: absolute; /* Stay in place */
-z-index: 2; /* Sit on top */
-width: 100%; /* Full width */
-height: 100%; /* Full height */
-`
-
-export const ModalBackground = styled.div`
-position: fixed; /* Stay in place */
-z-index: 1; /* Sit on top */
-left: 0;
-top: 0;
-width: 100%; /* Full width */
-height: 100%; /* Full height */
-background-color: rgb(0,0,0); /* Fallback color */
-background-color: rgba(0,0,0,0.6); /* Black w/ opacity */
-`
-
-export const ModalDialog = styled.div`
-position: relative;
-z-index: 999; /* Sit on top */
-width: 110%; /* Full width */
-transform: translateX(-5%);
-
-`
-
-const CssTextField = styled(TextField)`
-position: relative;
-width: 100%;
-  & .MuiOutlinedInput-root {
-    position: relative;
-    width: 100%;
-    background-color: white;
-    
-    color: black;
-    border: none;
-    // &.Mui-focused fieldset {
-    //   border: none;
-    // }
-  }
-`
-
-const CssButton = styled.div`
-position: relative;
-margin-top: 2px;
-width: 100%;
-text-align: left;
-`
-
-export const CardContainer = styled.div`
+export const Container = styled.div`
 position: relative;
 width: 100%;
 border-radius: 3px;
@@ -127,7 +73,6 @@ justify-content: space-around;
 export default function TrelloCard({card, ...props}) {
 
     const [showEditTitleModal, setShowEditTitleModal] = useState(false);
-    const [newTitle, setNewTitle] = useState("");
 
     const {order, listOrder} = props
 
@@ -135,7 +80,6 @@ export default function TrelloCard({card, ...props}) {
     
     if (!card)
         return null
-
 
     const handleShowCardDetail = (e) => {
         if(showEditTitleModal)
@@ -145,6 +89,7 @@ export default function TrelloCard({card, ...props}) {
 
     const handleShowEditTitleModal = (e) => {
         e.stopPropagation(); // prevent triggering handleShowCardDetail
+        e.preventDefault();
         setShowEditTitleModal(true)
         console.log('handleShowEditTitleModal')
     }
@@ -153,24 +98,21 @@ export default function TrelloCard({card, ...props}) {
         e.stopPropagation(); // prevent triggering handleShowCardDetail
         console.log('handleCloseEditTitleModal')
         setShowEditTitleModal(false)
-        if (newTitle !== "") 
-            setNewTitle("")
+        // if (newTitle !== "") 
+        //     setNewTitle("")
     }
 
-    const handleEditTitle = (e) => {
-        // console.log('handleEditTitle', e.target.value, order)
-        // if (e.target.value !== newTitle) 
-        //     setNewTitle(e.target.value)
-        setNewTitle(e.target.value)
-    }
+    const handleChangeTitle = (title) => {
+        // console.log('handleChangeTitle', title)
 
-    const handleChangeTitle = () => {
-        console.log('handleChangeTitle', newTitle)
+        if (title == null)
+            return
+
         const inputData = {
             listOrder: listOrder,
             cardOrder: order,
             cardId: card.id,
-            title: newTitle
+            title: title
         }
         dispatch(updateCardTitle(inputData))
         if(showEditTitleModal)
@@ -205,31 +147,20 @@ export default function TrelloCard({card, ...props}) {
             <IconContainer onClick={handleShowEditTitleModal}>
                 <EditIcon/>
             </IconContainer>
-            
         </Section>)
     }
 
     const EditTitleModal = () => {
-        if(!showEditTitleModal)
-            return
-
-        return (
-            <Modal>
-                <ModalBackground onClick={handleCloseEditTitleModal}></ModalBackground>
-                <ModalDialog>
-                    <CssTextField value={newTitle} onChange={handleEditTitle} autoFocus/>
-                    <CssButton><Button  variant="contained" onClick={handleChangeTitle}>Save Change</Button></CssButton>
-                </ModalDialog>
-            </Modal>
-        )
+        if(showEditTitleModal)
+            return (<TextModal handleChangeTitle={handleChangeTitle} handleCloseEditTitleModal={handleCloseEditTitleModal}/>)
     }
     return (
-        <CardContainer key={order} onClick={handleShowCardDetail}>
+        <Container key={order} onClick={handleShowCardDetail}>
             <EditTitleModal/>
             {/* <CssTextField value={newTitle} onChange={handleEditTitle}/> */}
             <Title/>
             <StatusList/>
-        </CardContainer>
+        </Container>
     )
     
 }
