@@ -3,7 +3,7 @@ import React, { useState, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { updateCardTitle } from '../../../store/slice/trelloListSlice';
 import styled from 'styled-components';
-import EditIcon from '@mui/icons-material/Edit';
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import TextModal from './TextModal';
 import CardModal from './CardModal';
 
@@ -45,6 +45,7 @@ right: -10px;
 border-radius: 3px;
 margin-right: 15px;
 display: none;
+
 :hover {
     background-color: #FCFCFC;
 }
@@ -53,6 +54,7 @@ display: none;
 export const Container = styled.div`
 position: relative;
 width: 100%;
+height: 36px;
 border-radius: 3px;
 background-color: #ffffff;
 box-shadow: 0 1px 3px #8C8C8C;
@@ -88,7 +90,7 @@ export default function TrelloCard({card, ...props}) {
 
     // callback
     const handleShowModal = (e, callback, open = false) => {
-        e.stopPropagation(); // prevent triggering handleShowCardDetail
+        e.stopPropagation(); 
         e.preventDefault();
         if (typeof open !== "boolean")
             return
@@ -140,7 +142,7 @@ export default function TrelloCard({card, ...props}) {
                 {card.title}
             </TitleContainer>
             <IconContainer onClick={event => handleShowModal(event, setShowTextModal, true)}>
-                <EditIcon/>
+                <EditOutlinedIcon sx={{fontSize: '22px'}}/>
             </IconContainer>
         </Section>)
     }

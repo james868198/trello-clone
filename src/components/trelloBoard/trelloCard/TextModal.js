@@ -59,6 +59,7 @@ export default function TextModal({open, handleChangeTitle, handleCloseModal}) {
 
     const handleSaveChange = (e) => {
         e.stopPropagation();
+        e.preventDefault();
         if (textRef && textRef.current && textRef.current.value)
             handleChangeTitle(textRef.current.value)
     }
@@ -66,7 +67,9 @@ export default function TextModal({open, handleChangeTitle, handleCloseModal}) {
         <Modal open={open}>
             <ModalBackground onClick={handleCloseModal}></ModalBackground>
             <ModalDialog>
-                <CssTextField inputRef={textRef}  autoFocus/>
+                <CssTextField inputRef={textRef} onClick={event => {
+                    event.stopPropagation();
+                }} autoFocus/>
                 <CssButton><Button  variant="contained" onClick={event => handleSaveChange(event)}>Save Change</Button></CssButton>
             </ModalDialog>
         </Modal>

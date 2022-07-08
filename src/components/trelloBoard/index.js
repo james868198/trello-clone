@@ -51,7 +51,7 @@ gap: 16px;
 export const TrelloListWrapper = styled.div`
 display: inline;
 min-height: 320px;
-min-width: 275px;
+min-width: 300px;
 width: 275px;
 // margin: 10px;
 
@@ -77,8 +77,8 @@ export default function TrelloBoard() {
   const lists = listData.lists
   
   // handlers
-  const handleAddList = () => {
-    
+  const handleAddList = (e) => {
+    e.stopPropagation(); 
     const data = {
       boardId: boardId,
       listId: `list-${Math.round(Math.random() * 10000).toString()}`
@@ -229,7 +229,7 @@ export default function TrelloBoard() {
               }, 
           }}
           fullWidth 
-          onClick={handleAddList}
+          onClick={event => handleAddList(event)}
           startIcon={<AddIcon/>}
         >
           Add another list
