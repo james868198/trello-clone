@@ -1,10 +1,11 @@
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { updateCardTitle } from '../../../store/slice/trelloListSlice';
 import styled from 'styled-components';
 import EditIcon from '@mui/icons-material/Edit';
 import TextModal from './TextModal';
+import CardModal from './CardModal';
 
 export const Status = styled.div`
 position: relative;
@@ -72,7 +73,11 @@ justify-content: space-around;
 
 export default function TrelloCard({card, ...props}) {
 
-    const [showEditTitleModal, setShowEditTitleModal] = useState(false);
+    const [showTextModal, setShowTextModal] = useState(false);
+    const [showCardModal, setShowCardModal] = useState(false);
+
+    // [TODO] replace temporary solution by updating redux card slice
+    const CardCopy = useMemo(() => Object.assign(card), [card]);
 
     const {order, listOrder} = props
 
@@ -81,25 +86,13 @@ export default function TrelloCard({card, ...props}) {
     if (!card)
         return null
 
-    const handleShowCardDetail = (e) => {
-        if(showEditTitleModal)
-            return
-        console.log('handleShowCardDetail', e)
-    }
-
-    const handleShowEditTitleModal = (e) => {
+    // callback
+    const handleShowModal = (e, callback, open = false) => {
         e.stopPropagation(); // prevent triggering handleShowCardDetail
         e.preventDefault();
-        setShowEditTitleModal(true)
-        console.log('handleShowEditTitleModal')
-    }
-
-    const handleCloseEditTitleModal = (e) => {
-        e.stopPropagation(); // prevent triggering handleShowCardDetail
-        console.log('handleCloseEditTitleModal')
-        setShowEditTitleModal(false)
-        // if (newTitle !== "") 
-        //     setNewTitle("")
+        if (typeof open !== "boolean")
+            return
+        callback(open)
     }
 
     const handleChangeTitle = (title) => {
@@ -115,10 +108,11 @@ export default function TrelloCard({card, ...props}) {
             title: title
         }
         dispatch(updateCardTitle(inputData))
-        if(showEditTitleModal)
-            setShowEditTitleModal(false)
+        if(showTextModal)
+            setShowTextModal(false)
     }
     
+    // component
     const StatusList = () => {
         if(!card.status) {
             return
@@ -127,6 +121,7 @@ export default function TrelloCard({card, ...props}) {
         const StatusIcons = card.status.map((status) => {
             return <StatusIcon></StatusIcon>
         })
+
         return (
         <Section>
             <Status>
@@ -144,22 +139,18 @@ export default function TrelloCard({card, ...props}) {
             <TitleContainer>
                 {card.title}
             </TitleContainer>
-            <IconContainer onClick={handleShowEditTitleModal}>
+            <IconContainer onClick={event => handleShowModal(event, setShowTextModal, true)}>
                 <EditIcon/>
             </IconContainer>
         </Section>)
     }
 
-    const EditTitleModal = () => {
-        if(showEditTitleModal)
-            return (<TextModal handleChangeTitle={handleChangeTitle} handleCloseEditTitleModal={handleCloseEditTitleModal}/>)
-    }
     return (
-        <Container key={order} onClick={handleShowCardDetail}>
-            <EditTitleModal/>
-            {/* <CssTextField value={newTitle} onChange={handleEditTitle}/> */}
+        <Container key={card.id} onClick={event => handleShowModal(event, setShowCardModal, true)}>
+            <TextModal open={showTextModal} handleChangeTitle={handleChangeTitle} handleCloseModal={event => handleShowModal(event, setShowTextModal, false)}/>
             <Title/>
             <StatusList/>
+            <CardModal card={CardCopy} open={showCardModal}  handleCloseModal={(event) => (handleShowModal(event, setShowCardModal, false))}/>
         </Container>
     )
     

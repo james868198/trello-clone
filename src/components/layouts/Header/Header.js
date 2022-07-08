@@ -3,7 +3,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import SearchBar from '../../common/SearchBar';
 import {Link} from "react-router-dom"
-import SvgIcon, { SvgIconProps } from '@mui/material/SvgIcon';
 
 // mui
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
@@ -65,7 +64,9 @@ export default function Header({title, ...props}) {
                     '&:hover': {
                         backgroundColor: '#6595bd',
                     }, 
-                }}>
+                }}
+                shape='square'
+                >
                     {props.children}
                 </IconButton>
             </Section>

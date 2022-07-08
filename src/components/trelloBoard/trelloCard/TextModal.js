@@ -6,6 +6,7 @@ import Button from '@mui/material/Button';
 
 
 const Modal = styled.div`
+display:  ${({open}) => open ? 'block' : 'none'};
 position: absolute; /* Stay in place */
 z-index: 2; /* Sit on top */
 width: 100%; /* Full width */
@@ -53,19 +54,20 @@ width: 100%;
 text-align: left;
 `
 
-export default function TextModal({handleChangeTitle, handleCloseEditTitleModal}) {
+export default function TextModal({open, handleChangeTitle, handleCloseModal}) {
     const textRef = useRef(null)
 
-    const handleSaveChange = () => {
+    const handleSaveChange = (e) => {
+        e.stopPropagation();
         if (textRef && textRef.current && textRef.current.value)
             handleChangeTitle(textRef.current.value)
     }
     return(
-        <Modal>
-            <ModalBackground onClick={handleCloseEditTitleModal}></ModalBackground>
+        <Modal open={open}>
+            <ModalBackground onClick={handleCloseModal}></ModalBackground>
             <ModalDialog>
                 <CssTextField inputRef={textRef}  autoFocus/>
-                <CssButton><Button  variant="contained" onClick={handleSaveChange}>Save Change</Button></CssButton>
+                <CssButton><Button  variant="contained" onClick={event => handleSaveChange(event)}>Save Change</Button></CssButton>
             </ModalDialog>
         </Modal>
     )

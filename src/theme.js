@@ -17,7 +17,7 @@ const theme = createTheme({
       '"Segoe UI Emoji"',
       '"Segoe UI Symbol"',
     ].join(','),
-    fontSize: "16",
+    fontSize: 16,
     // body1: {
      
     // }
@@ -96,6 +96,15 @@ const theme = createTheme({
       },
     },
     MuiIconButton:{
+      styleOverrides: {
+        root: ({ ownerState }) => ({
+          ...(ownerState.shape === 'square' && {
+              borderRadius: BORDER_RADIUS,
+            }),
+        }),
+      },
+    },
+    MuiModal:{
       styleOverrides: {
         root: {
           borderRadius: BORDER_RADIUS,
