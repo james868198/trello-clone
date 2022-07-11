@@ -98,7 +98,7 @@ export default function TrelloCard({card, ...props}) {
     }
 
     const handleChangeTitle = (title) => {
-        // console.log('handleChangeTitle', title)
+        console.log('handleChangeTitle', title)
 
         if (title == null)
             return
@@ -149,7 +149,7 @@ export default function TrelloCard({card, ...props}) {
 
     return (
         <Container key={card.id} onClick={event => handleShowModal(event, setShowCardModal, true)}>
-            <TextModal open={showTextModal} handleChangeTitle={handleChangeTitle} handleCloseModal={event => handleShowModal(event, setShowTextModal, false)}/>
+            <TextModal card={CardCopy} open={showTextModal} handleChangeTitle={handleChangeTitle} handleCloseModal={event => handleShowModal(event, setShowTextModal, false)}/>
             <Title/>
             <StatusList/>
             <CardModal card={CardCopy} open={showCardModal}  handleCloseModal={(event) => (handleShowModal(event, setShowCardModal, false))}/>

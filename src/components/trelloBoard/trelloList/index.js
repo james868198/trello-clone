@@ -23,7 +23,6 @@ position: relative;
 width: 100%;
 background-color: ${LIST_BACKGROUND_COLOR};
 color: ${LIST_COLOR};
-overflow: hidden;
 border-radius: 3px;
 `
 const ContainerSection = styled.div`
