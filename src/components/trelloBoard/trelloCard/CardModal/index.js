@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import styled from 'styled-components';
 import Description from './Description';
-
+import CloseIconButton from '../../../common/buttons/CloseIconButton';
 // mui
 import Paper from '@mui/material/Paper';
 import Backdrop from '@mui/material/Backdrop';
@@ -9,9 +9,9 @@ import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import IconButton from '@mui/material/IconButton';
+// import IconButton from '@mui/material/IconButton';
+
 // icons
-import CloseIcon from '@mui/icons-material/Close';
 import NotesIcon from '@mui/icons-material/Notes';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import StickyNote2Icon from '@mui/icons-material/StickyNote2';
@@ -127,14 +127,7 @@ export default function CardModal({card, open, handleCloseModal}) {
     const CloseButton = () => {
         return (
             <CloseButtonContainer onClick={handleCloseModal}>
-                <IconButton sx={{
-                    color: '#6c6c6c',
-                    '&:hover': {
-                        backgroundColor: '#ebebeb',
-                    }, 
-                }}>
-                    <CloseIcon fontSize='small'/>
-                </IconButton>
+                <CloseIconButton/>
             </CloseButtonContainer>
         )
     }

@@ -1,22 +1,19 @@
 import React, { useState, useEffect, useRef, useLayoutEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { addCard, updateListTitle, removeList } from '../../../store/slice/trelloListSlice';
+import MoreMenu from '../../common/MoreMenu';
 
 // mui
 
 import Button from '@mui/material/Button';
-import RemoveIcon from '@mui/icons-material/Remove';
-import IconButton from '@mui/material/IconButton';
 
 // icon
 import AddIcon from '@mui/icons-material/Add';
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 // import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 import TrelloCard from '../trelloCard';
 
 import styled from 'styled-components';
-import { current } from '@reduxjs/toolkit';
 
 const LIST_BACKGROUND_COLOR = '#ebecf0';
 const LIST_COLOR = '#2d2d2d';
@@ -84,7 +81,7 @@ margin-top: 5px;
 font-size: 18px;
 `
 
-const MenuIconContainer =  styled.div`
+const MoreIconContainer =  styled.div`
 position: absolute;
 top: 10px;
 right: 10px;
@@ -94,7 +91,7 @@ right: 10px;
 
 export default function TrelloList({list, order, ...props}) {
   const titleRef = useRef(null)
-  const dispatch = useDispatch();  
+  const dispatch = useDispatch()  
   const {handleOnDragStart, handleOnDragEnd, handleCardOnDragEnter, draggedCard, draggedList} = props
   
   useEffect(() => {
@@ -109,7 +106,8 @@ export default function TrelloList({list, order, ...props}) {
     e.stopPropagation(); 
     e.preventDefault();
     callback()
-  }
+  }  
+
   const  handleAddCard = () => {
     console.log('handleAddCard')
     const cardId = `card-${Math.round(Math.random() * 10000).toString()}`
@@ -166,6 +164,12 @@ export default function TrelloList({list, order, ...props}) {
     return false
   }
 
+  const MenuItems = [
+    {
+      name: "Remove List...",
+      handler: handleRemoveList
+    }
+  ]
   // components
 
   const TrelloListTitle = () => {
@@ -187,18 +191,9 @@ export default function TrelloList({list, order, ...props}) {
 
   const More = () => {
     return (
-      <MenuIconContainer>
-        <IconButton 
-          sx={{
-            color: '#3d3d3d',
-            '&:hover': {
-                backgroundColor: '#d1d2d5',
-          }}} 
-        
-          shape="square">
-          <MoreHorizIcon sx={{fontSize: '20px'}}/>
-        </IconButton>
-      </MenuIconContainer>
+      <MoreIconContainer>
+        <MoreMenu items={MenuItems} title={'List actions'}/>
+      </MoreIconContainer>
     )
   }
 
@@ -222,26 +217,6 @@ export default function TrelloList({list, order, ...props}) {
     )
   }
 
-  const RemoveListBtn = () => {
-    return (
-      <Button 
-        size="small" 
-        variant="text" 
-        startIcon={<RemoveIcon />} 
-        onClick={eventHandler(handleRemoveList)}
-        sx={{
-          justifyContent: "flex-start",
-          color: '#2d2d2d',
-          '&:hover': {
-              backgroundColor: '#d1d2d5',
-          }}} 
-        >
-          Remove List
-      </Button>
-
-    )
-  }
-
   return (
     <Container draggable >
       <Header>
@@ -254,7 +229,7 @@ export default function TrelloList({list, order, ...props}) {
             <CardWrapper 
               dragged={isCardDragged(card)} 
               draggable
-              key={index} 
+              key={card.id} 
               onDragEnd={event => handleOnDragEnd(event)}  
               onDragEnter={event => handleCardOnDragEnter(event, index, order)} 
               onDragStart={event => handleOnDragStart(event, card, 'card')} >
@@ -265,7 +240,6 @@ export default function TrelloList({list, order, ...props}) {
       </Content>
       <Footer>
         <AddCardBtn/>
-        <RemoveListBtn/>
       </Footer>
     </Container>
   )

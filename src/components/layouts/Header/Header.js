@@ -61,6 +61,7 @@ export default function Header({title, ...props}) {
             <Section>
                 <IconButton sx={{
                     fontSize: 30,
+                    color: '#ffffff',
                     '&:hover': {
                         backgroundColor: '#6595bd',
                     }, 

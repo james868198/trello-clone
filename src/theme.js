@@ -57,18 +57,7 @@ const theme = createTheme({
       secondary: grey[700],
       disabled: grey[500]
     },
-    action: {
-      active: '#FFFFFF',
-      activeOpacity: 1,
-      disabled: grey[700],
-      disabledBackground: grey[200],
-      hover: red[100],
-      hoverOpacity: 0.7,
-      focus: red[600],
-      focusOpacity: 1,
-      selected: red[300],
-      selectedOpacity: 1
-    },
+    action: {},
     background: {
       default: 'white',
       main: '#0379bf',
@@ -110,7 +99,7 @@ const theme = createTheme({
           borderRadius: BORDER_RADIUS,
         },
       },
-    }
+    },
   },
 });
 
