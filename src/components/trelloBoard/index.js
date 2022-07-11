@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useParams, Navigate } from "react-router-dom";
 
@@ -53,11 +53,7 @@ display: inline;
 min-height: 320px;
 min-width: 300px;
 width: 275px;
-// margin: 10px;
-
 `
-
-
 
 export default function TrelloBoard() {
 
@@ -75,7 +71,7 @@ export default function TrelloBoard() {
   }
 
   const lists = listData.lists
-  
+
   // handlers
   const handleAddList = (e) => {
     e.stopPropagation(); 
@@ -241,7 +237,7 @@ export default function TrelloBoard() {
   return (
       <TrelloBoardContainer>
         <TrelloBoardHeader>
-          <TrelloBoardNav title={`trello-board-${boardId}`}/>
+          <TrelloBoardNav board={board}/>
         </TrelloBoardHeader>
         <TrelloBoardContent>
           <TrelloBoardContentContainer>

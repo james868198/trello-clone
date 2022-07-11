@@ -49,10 +49,10 @@ padding: 10px;
 
 export const Card = (board) => {
     return (
-        <Link to={`b/${board.boardId}`} key={board.boardId}>
+        <Link to={`b/${board.id}`} key={board.id}>
             <CardContainer>
                 <CardTitle>
-                    <h3>#{board.boardId}. {board.name}</h3>
+                    <h3>#{board.id}. {board.name}</h3>
                 </CardTitle>
             </CardContainer>
         </Link>

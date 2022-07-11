@@ -3,9 +3,10 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 const initialState = {
   boards: {
     'board-00001': {
-      boardId: 'board-00001',
+      id: 'board-00001',
       name: "test1",
       description: "test1",
+      starred: false,
       lists: [],
       archived: false
     }, 
@@ -20,21 +21,27 @@ export const trelloBoardsSlice = createSlice({
         const time = Date.now()
         const boardId = `board-${Math.round(Math.random() * 10000).toString()}` // temperay id
         const board = {
-          boardId: boardId,
+          id: boardId,
           name: "default board",
           description: null,
+          starred: false,
           lists: [],
           created: time,
           updated: time,
           archived: false
         }
-        console.log("createBoard test", state.boards)
         state.boards[boardId] = board
       },
-      updateBoard: (state, action) => {
+      updateBoardName: (state, action) => {
         const { boardId, name } = action.payload;
         if (state.boards[boardId])
           state.boards[boardId].name = name
+      },
+      starBoard: (state, action) => {
+        const { boardId } = action.payload;
+        const star = !state.boards[boardId].starred
+        if (state.boards[boardId])
+          state.boards[boardId].starred = star
       },
       archiveBoard: (state, action) => {
         const { boardId } = action.payload;
@@ -68,7 +75,7 @@ export const trelloBoardsSlice = createSlice({
 })
 
 // export actions
-export const { createBoard, updateBoard, archiveBoard, removeBoard, addListToBoard, removeListFromBoard, editBoard } = trelloBoardsSlice.actions;
+export const { createBoard, updateBoardName, starBoard, archiveBoard, removeBoard, addListToBoard, removeListFromBoard, editBoard } = trelloBoardsSlice.actions;
 
 // select board
 export const getBoards = (state) => Object.values(state.trelloBoard.boards)

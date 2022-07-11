@@ -1,21 +1,30 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useParams } from "react-router-dom";
 import styled from 'styled-components';
+import { updateBoardName, starBoard } from '../../../store/slice/trelloBoardSlice';
 
 // mui
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
+import IconButton from '@mui/material/IconButton';
+
+// icon
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import RocketLaunchIcon from '@mui/icons-material/RocketLaunch';
 import FlashOnIcon from '@mui/icons-material/FlashOn';
-import StarOutlineIcon from '@mui/icons-material/StarOutline';
+import StarOutlineRoundedIcon from '@mui/icons-material/StarOutlineRounded';
+import StarRateRoundedIcon from '@mui/icons-material/StarRateRounded';
+
+const BTN_COLOR = '#359ad4'
+const BTN_HOVER_COLOR = '#4da1d2'
 
 export const Container = styled.div`
 position: relative;
 width: 100%;
+height: 52px;
 display: flex;
 flex-direction: row;
 flex-wrap: wrap;
@@ -47,12 +56,42 @@ position: relative;
 margin: 5px;
 `
 
-export default function TrelloBoardNav({title, ...props}) {
+const TextField = styled.input`
+
+position: relative;
+min-height: 38px;
+font-size: 24px;
+border: none;
+background-color: transparent;
+color: white;
+cursor: pointer;
+border-radius: 4px;
+text-indent: 10px;
+
+:hover {
+  background-color: ${BTN_HOVER_COLOR};
+}
+
+:focus {
+    color: black;
+    background-color: white;
+    cursor: text;
+    border: none;
+
+}
+
+`
+
+export default function TrelloBoardNav({board, ...props}) {
 
     // states
-
-    const [titleEditable, setTitleEditable] = useState(false)
-
+    const dispatch = useDispatch()  
+    const titleRef = useRef(null)
+    
+    useEffect(() => {
+        if (titleRef && board && board.name)
+          titleRef.current.value = board.name
+    });
 
     // componentssx={{
     
@@ -69,9 +108,9 @@ export default function TrelloBoardNav({title, ...props}) {
             <Section>
                 <Button sx={{
                     color: 'white', 
-                    backgroundColor: '#359ad4',
+                    backgroundColor: BTN_COLOR,
                     '&:hover': {
-                        backgroundColor: '#4da1d2',
+                        backgroundColor: BTN_HOVER_COLOR,
                     }, 
                 }}{...props}>
                     {props.children}
@@ -87,18 +126,34 @@ export default function TrelloBoardNav({title, ...props}) {
     };
 
     const Title = () => {
-        let Content = () => <h3>{title}</h3>;
         return (                
-            
             <Section>
-                <Content/>
+                <TextField 
+                    ref={titleRef}
+                    onBlur={handleUpdateTitle} 
+                    onKeyDown={event => handleKeyDown(event)}
+                />
             </Section>
         );
     };
 
     const Star = () => {
         return (
-            <Section><StarOutlineIcon/></Section>
+            <Section>
+                <IconButton 
+                onClick={(e) => handleStarOnClick(e)}
+                shape='square'
+                sx={{
+                    color: 'white', 
+                    backgroundColor: BTN_COLOR,
+                    '&:hover': {
+                        color: '#d9d32a',
+                        backgroundColor: BTN_HOVER_COLOR,
+                    }, 
+                }}>
+                    {board && board.starred ? <StarRateRoundedIcon sx={{color: '#d9d32a', fontSize: '24px'}}/> : <StarOutlineRoundedIcon sx={{fontSize: '24px'}}/>}
+                </IconButton>
+            </Section>
         );
     };
 
@@ -140,10 +195,37 @@ export default function TrelloBoardNav({title, ...props}) {
 
     // handlers
 
-    const handleEditTitle = () => {
+    const handleKeyDown = (e) => {
+        if (e.key === 'Enter') {
+          if (e.target)
+            e.target.blur()
+        }
+      }
 
-    };
+    const handleUpdateTitle = () => {
+    
+        let newTitle = null
+        if(titleRef && titleRef.current && titleRef.current.value)
+          newTitle = titleRef.current.value
+        if (board && newTitle != null && newTitle !== board.name) {
+            const inputData = {
+            boardId: board.id,
+            name: newTitle
+          }
+          dispatch(updateBoardName(inputData))
+        }    
+    }
 
+    const handleStarOnClick = (e) => {
+        e.stopPropagation(); 
+
+        if (board) {
+            const inputData = {
+                boardId: board.id
+            }
+            dispatch(starBoard(inputData))
+        }    
+    }
     return (
         <Container>
             <ContainerLeft>
