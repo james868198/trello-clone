@@ -15,13 +15,13 @@ import TrelloCard from '../trelloCard';
 
 import styled from 'styled-components';
 
-const LIST_BACKGROUND_COLOR = '#ebecf0';
+const LIST_BG_COLOR = '#ebecf0';
 const LIST_COLOR = '#2d2d2d';
 
 const Container = styled.div`
 position: relative;
 width: 100%;
-background-color: ${LIST_BACKGROUND_COLOR};
+background-color: ${LIST_BG_COLOR};
 color: ${LIST_COLOR};
 border-radius: 3px;
 `
@@ -63,7 +63,7 @@ const TextField = styled.input`
 position: relative;
 font-size: 22px;
 border: none;
-background-color: ${LIST_BACKGROUND_COLOR};
+background-color: ${LIST_BG_COLOR};
 color: ${LIST_COLOR};
 cursor: pointer;
 :focus {
@@ -115,6 +115,7 @@ export default function TrelloList({list, order, ...props}) {
       card: {
         id: cardId,
         title: `${cardId}-title`,
+        description: "",
         listId: list.id
       }
     }

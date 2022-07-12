@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import styled from 'styled-components';
 import Description from './Description';
+import Operations from './Operations'
 import CloseIconButton from '../../../common/buttons/CloseIconButton';
 // mui
 import Paper from '@mui/material/Paper';
@@ -188,13 +189,6 @@ export default function CardModal({card, open, handleCloseModal}) {
             </Section>
         )
     }
-    const OperationSection = () => {
-        return(
-            <Label>
-                Operation
-            </Label>
-        )
-    }
 
     return (
           <Modal
@@ -220,7 +214,7 @@ export default function CardModal({card, open, handleCloseModal}) {
                             <ActivitySection/>
                         </BottomContainerLeft>
                         <BottomContainerRight>
-                            <OperationSection/>
+                            <Operations/>
                         </BottomContainerRight>
                     </BottomContainer>
                     <CloseButton/>

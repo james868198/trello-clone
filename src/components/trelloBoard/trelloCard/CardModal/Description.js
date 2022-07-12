@@ -39,7 +39,9 @@ ${({extend}) => {
         return `
             border: none;
             height: 60px;
-            background-color: #e4e4e4;
+            background-color: '#e4e4e4';
+            cursor: pointer;
+
             &:hover {
                 background-color: #b0b0b0;
             }
@@ -94,7 +96,8 @@ export default function Description({description, handleUpdateDescription}) {
     return (
         <Container>
             <TextField 
-                extend={showTextField} 
+                extend={showTextField}
+                empty={description == null || description == undefined || description === ""} 
                 ref={textRef} 
                 onClick={event => handleClickContent(event)}  
                 placeholder={description != null ? description: PLACEHOLDER}
