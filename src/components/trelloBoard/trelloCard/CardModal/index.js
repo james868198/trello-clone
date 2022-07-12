@@ -1,15 +1,16 @@
 import React, { useState, useRef } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+
+import { updateCardDescription, getCardById } from '../../../../store/slice/trelloCardSlice';
+
 import styled from 'styled-components';
 import Description from './Description';
 import Operations from './Operations'
 import CloseIconButton from '../../../common/buttons/CloseIconButton';
 // mui
-import Paper from '@mui/material/Paper';
 import Backdrop from '@mui/material/Backdrop';
-import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
 // import IconButton from '@mui/material/IconButton';
 
 // icons
@@ -23,8 +24,6 @@ position: absolute;
 top: 50%;
 left: 50%;
 transform: translate(-50%, -50%);
-
-
 `
 const ContainerInner = styled.div`
 position: relative;
@@ -105,15 +104,23 @@ flex-direction: column;
 `
 
 
-export default function CardModal({card, open, handleCloseModal}) {
+export default function CardModal({cardId, open, handleCloseModal}) {
     const [showTextField, setShowTextField] = useState(false)
-
+    const card = useSelector(getCardById(cardId))
+    const dispatch = useDispatch()
+    
     if (card == null)
         return
 
     // handlers
+
     const handleUpdateDescription = (text) => {
         console.log("handleUpdateDescription", text)
+        const inputData = {
+            cardId: cardId,
+            description: text
+        }
+        dispatch(updateCardDescription(inputData))
     }
 
     // components

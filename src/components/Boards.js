@@ -2,12 +2,7 @@ import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import {Link} from "react-router-dom";
-import { createBoard, archiveBoard, getBoards } from '../store/slice/trelloBoardSlice';
-
-// mui
-import Paper from '@mui/material/Paper'
-import Button from '@mui/material/Button'
-
+import { createBoard, getBoards } from '../store/slice/trelloBoardSlice';
 
 export const Container = styled.div`
 position: relative;
@@ -63,7 +58,15 @@ export default function Boards (props) {
 
     const dispatch = useDispatch();  
     
-    const handleCreateBoard = () => dispatch(createBoard())
+    const handleCreateBoard = () => {
+        const now = Date.now()
+        const inputData = {
+            now: now
+        }
+        dispatch(createBoard(inputData))
+
+    }
+    
     const boards = useSelector(getBoards)
     const CreateBoardBtn = () => {
         return (

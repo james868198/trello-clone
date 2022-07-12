@@ -1,7 +1,8 @@
 
 import React, { useState, useMemo } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { updateCardTitle } from '../../../store/slice/trelloListSlice';
+import { useSelector } from 'react-redux';
+import { getCardById } from '../../../store/slice/trelloCardSlice';
+
 import styled from 'styled-components';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import TextModal from './TextModal';
@@ -73,17 +74,16 @@ justify-content: space-around;
 
 `
 
-export default function TrelloCard({card, ...props}) {
+export default function TrelloCard({cardId, ...props}) {
 
     const [showTextModal, setShowTextModal] = useState(false);
     const [showCardModal, setShowCardModal] = useState(false);
+    const card = useSelector(getCardById(cardId));
 
     // [TODO] replace temporary solution by updating redux card slice
     const CardCopy = useMemo(() => Object.assign(card), [card]);
 
     const {order, listOrder} = props
-
-    const dispatch = useDispatch();  
     
     if (!card)
         return null
@@ -95,23 +95,6 @@ export default function TrelloCard({card, ...props}) {
         if (typeof open !== "boolean")
             return
         callback(open)
-    }
-
-    const handleChangeTitle = (title) => {
-        console.log('handleChangeTitle', title)
-
-        if (title == null)
-            return
-
-        const inputData = {
-            listOrder: listOrder,
-            cardOrder: order,
-            cardId: card.id,
-            title: title
-        }
-        dispatch(updateCardTitle(inputData))
-        if(showTextModal)
-            setShowTextModal(false)
     }
     
     // component
@@ -149,7 +132,7 @@ export default function TrelloCard({card, ...props}) {
 
     return (
         <Container key={card.id} onClick={event => handleShowModal(event, setShowCardModal, true)}>
-            <TextModal card={CardCopy} open={showTextModal} handleChangeTitle={handleChangeTitle} handleCloseModal={event => handleShowModal(event, setShowTextModal, false)}/>
+            <TextModal card={CardCopy} open={showTextModal} handleCloseModal={event => handleShowModal(event, setShowTextModal, false)}/>
             <Title/>
             <StatusList/>
             <CardModal card={CardCopy} open={showCardModal}  handleCloseModal={(event) => (handleShowModal(event, setShowCardModal, false))}/>

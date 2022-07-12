@@ -3,7 +3,8 @@ import styled from 'styled-components';
 import ButtonList from './ButtonList';
 import Button from '@mui/material/Button';
 // import { updateCardTitle } from '../../../store/slice/trelloListSlice';
-// import { useSelector, useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { updateCardTitle, getCardById } from '../../../../store/slice/trelloCardSlice';
 
 
 const Modal = styled.div`
@@ -68,8 +69,10 @@ width: 100px;
 text-align: left;
 `
 
-export default function TextModal({card, open, handleChangeTitle, handleCloseModal}) {
-    
+export default function TextModal({cardId, open, handleCloseModal}) {
+    const card = useSelector(getCardById(cardId));
+    const dispatch = useDispatch();  
+
     const titleRef = useRef(null)
     useEffect(() => {
         if (card && titleRef && titleRef.current)
@@ -79,8 +82,14 @@ export default function TextModal({card, open, handleChangeTitle, handleCloseMod
     const handleSaveChange = (e) => {
         e.stopPropagation();
         e.preventDefault();
-        if (titleRef && titleRef.current && titleRef.current.value)
-            handleChangeTitle(titleRef.current.value)
+        if (titleRef && titleRef.current && titleRef.current.value !== card.title) {
+            const inputData = {
+                cardId: cardId,
+                title: titleRef.current.value
+            }
+            dispatch(updateCardTitle(inputData))
+        }
+        handleCloseModal()
     }
     return(
         <Modal open={open}>

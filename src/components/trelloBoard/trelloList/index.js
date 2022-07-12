@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useLayoutEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { addCard, updateListTitle, removeList } from '../../../store/slice/trelloListSlice';
+import { addCard, updateListTitle, removeListById, getListById } from '../../../store/slice/trelloListSlice';
 import MoreMenu from '../../common/MoreMenu';
 
 // mui
@@ -88,11 +88,12 @@ right: 10px;
 `
 
 
-export default function TrelloList({list, order, ...props}) {
+export default function TrelloList({listId, order, ...props}) {
   const titleRef = useRef(null)
   const dispatch = useDispatch()  
   const {handleOnDragStart, handleOnDragEnd, handleCardOnDragEnter, draggedCard, draggedList} = props
-  
+  const list = useSelector(getListById(listId));
+
   useEffect(() => {
     if (!list)
       return
@@ -128,7 +129,7 @@ export default function TrelloList({list, order, ...props}) {
     const inputData = {
       listId: list.id
     }
-    dispatch(removeList(inputData))
+    dispatch(removeListById(inputData))
   }
 
   const handleChangeListTitle = () => {
@@ -224,16 +225,16 @@ export default function TrelloList({list, order, ...props}) {
         <More/>
       </Header>
       <Content>
-        {list.cards.map((card, index) => {
+        {list.cards.map((cardId, index) => {
           return (
             <CardWrapper 
-              dragged={isCardDragged(card)} 
+              dragged={isCardDragged(cardId)} 
               draggable
-              key={card.id} 
+              key={cardId} 
               onDragEnd={event => handleOnDragEnd(event)}  
               onDragEnter={event => handleCardOnDragEnter(event, index, order)} 
-              onDragStart={event => handleOnDragStart(event, card, 'card')} >
-              <TrelloCard card={card} order={index} listOrder={order} /> 
+              onDragStart={event => handleOnDragStart(event, cardId, 'card')} >
+              <TrelloCard cardId={cardId} order={index} listOrder={order} /> 
             </CardWrapper>
           )
         })}

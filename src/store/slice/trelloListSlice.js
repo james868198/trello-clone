@@ -1,9 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import trelloBoardSlice from './trelloBoardSlice';
 
 const initialState = {
-  lists: [],
-  createdCounter: 1,
+  lists: {},
 };
 
 export const trelloListSlice = createSlice({
@@ -11,116 +9,95 @@ export const trelloListSlice = createSlice({
     initialState,
     reducers: {
         addList: (state, action) => {
-          const { boardId, listId, } = action.payload
-          if (boardId && listId) {
-            const now = Date.now()
-            const list = {
-              id: listId,
-              title: `list-${state.createdCounter}`,
-              cards: [],
-              boardId: boardId,
-              created: now,
-              updated: now,
-              archived: false
+            const { boardId, listId, now} = action.payload
+            if (boardId && listId && now) {
+                const list = {
+                    id: listId,
+                    title: `${listId}-default-title`,
+                    cards: [],
+                    boardId: boardId,
+                    created: now,
+                    updated: now,
+                    archived: false
+                }
+                state.lists[listId] = list
             }
-            state.lists.push(list)
-            state.createdCounter++
-          }
         },
         updateListTitle: (state, action) => {
-          const { order, title } = action.payload;
-          const list = state.lists[order]
-          if (list) {
-            list.title = title
-            list.updated = Date.now()
-          }
+            const { listId, title } = action.payload;
+            if (!state.lists.hasOwnProperty(listId) || title == null || title === "" || title === state.lists[listId].title)
+                return
+            state.lists[listId].title = title
         },
-        archiveList: (state, action) => {
-          const { order } = action.payload;
-          const list = state.lists[order]
-          if (list) {
-            list.updated = Date.now()
-            list.archived = true
-          }
-            
+        updateListBoardId: (state, action) => {
+            const { listId, boardId } = action.payload;
+            if (!state.lists.hasOwnProperty(listId) || boardId == null || boardId === "" || boardId === state.lists[listId].boardId)
+                return
+            state.lists[listId].boardId = boardId
         },
-        removeList: (state, action) => {
-          const { listId } = action.payload
-          console.log("removeList:", listId)
-          if (listId) {
-            state.lists = state.lists.filter((list, index) => list.id !== listId)
-          }
+        removeListById: (state, action) => {
+            const { listId, soft } = action.payload;
+            if (!state.lists.hasOwnProperty(listId))
+                return
+            if (soft)
+                state.lists[listId].archived = true
+            else
+                delete state.lists[listId]
         },
-        insertList: (state, action) => {
-          const { listOrder, draggedList } = action.payload
+        removeListByBoardId: (state, action) => {
+            const { boardId, soft } = action.payload;
+            if (boardId == null)
+                return
 
-          if (draggedList == null || listOrder > state.lists.length)
-            return
-          if (state.lists[listOrder].id === draggedList.id)
-            return
-          
-          // remove list from original position
-          state.lists = state.lists.filter(((list) => list.id !== draggedList.id))
-          
-          // insert card to new position
-          state.lists.splice(listOrder, 0, draggedList)
+            for (const [id, list] of Object.entries(state.lists)) {
+                if (boardId !== list.boardId) 
+                    continue
+                if (soft)
+                    state.lists[id].archived = true
+                else
+                    delete state.lists[id]
+            } 
         },
-        addCard: (state, action) => {
-          const { order, card } = action.payload
-          const list = state.lists[order]
-          if (list) {
-            list.cards.push(card)
-          }
+        insertCardToList: (state, action) => {
+            const { listId, order, draggedCard} = action.payload
+
+            if (draggedCard == null ||
+                !state.lists.hasOwnProperty(listId) || 
+                !state.lists.hasOwnProperty(draggedCard.listId))
+                return
+            
+            if (draggedCard.listId === listId) {
+                // swap
+                const index = state.lists[listId].cards.findIndex(id => id === draggedCard.id)
+                if (index === order)
+                    return
+                state.lists[listId].cards[index] = state.lists[listId].cards[order]
+                state.lists[listId].cards[order] = draggedCard.id
+                return 
+            }
+
+            // two cards are in different list. First remove card from original position
+            state.lists[draggedCard.listId].cards = state.lists[draggedCard.listId].cards.filter(id => id !== draggedCard.id)
+            
+            // insert card to new position
+            if (order < state.lists[listId].cards.length)
+                state.lists[listId].cards.splice(order, 0, draggedCard)
+            else
+                state.lists[listId].cards.push(draggedCard)          
         },
-        updateCardTitle: (state, action) => {
-          const { listOrder, cardOrder, cardId, title } = action.payload
-          if (listOrder >= state.lists.length)
-            return
-          const list = state.lists[listOrder]
-          console.log("updateCardTitle", list)
-          if (cardOrder < list.cards.length && list.cards[cardOrder].id === cardId) {
-            list.cards[cardOrder].title = title
-          }
-        },
-        removeCard: (state, action) => {
+        removeCardFromList: (state, action) => {
           const { listId, cardId } = action.payload;
           const list = state.lists[listId]
           if (list && cardId)
-            list.cards.filter(card => card.cardId !== cardId)
-        },
-        insertCard: (state, action) => {
-          const { listOrder, cardOrder, draggedCard, newCard} = action.payload
-
-          if (draggedCard == null || newCard == null || listOrder >= state.lists.length)
-            return
-
-          if (cardOrder < state.lists[listOrder].cards.length && state.lists[listOrder].cards[cardOrder].id === draggedCard.id)
-            return
-          
-          // remove card from original position
-          const listIndex = state.lists.findIndex(list => list.id === draggedCard.listId)
-          state.lists[listIndex].cards = state.lists[listIndex].cards.filter(((card) => card.id !== draggedCard.id))
-          
-          // insert card to new position
-          if (cardOrder < state.lists[listOrder].cards.length)
-            state.lists[listOrder].cards.splice(cardOrder, 0, newCard)
-          else
-            state.lists[listOrder].cards.push(newCard)
-
-          // state.draggedItem = null
-          
+            list.cards.filter(id => id !== cardId)
         },
     }
 })
 
 // export actions
-export const { addList, updateList, updateListTitle, archiveList, removeList,insertList, addCard, removeCard, updateCardTitle, dragCard, dropCard, insertCard} = trelloListSlice.actions;
+export const { addList, updateListTitle, removeListById, removeListByBoardId, insertCardToList, removeCard, removeCardFromList} = trelloListSlice.actions;
 
-export const selectListData = (state) => {
-  // console.log("state:",state.trelloList)
-  return state.trelloList
-}
-// export const selectListOrder = (state) => state.trelloList.listOrder
+export const getListById = (listId) => (state) => state.trelloList.lists.hasOwnProperty(listId)? state.trelloList.lists[listId] : null
 
 //export reducer
 export default trelloListSlice.reducer;

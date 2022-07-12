@@ -1,8 +1,5 @@
 import React from 'react'
-// import { useSelector, useDispatch } from 'react-redux'
 import styled from 'styled-components'
-// import {Link} from "react-router-dom"
-// import { createBoard, archiveBoard, selectBoards } from '../store/slice/trelloBoardSlice';
 import Boards from './Boards';
 
 export const Container = styled.div`
@@ -30,8 +27,6 @@ display: inline-box;
 `
 
 const Home = () => {
-    
-   
     return (
         <Container>
            <ContainerRight>

@@ -5,8 +5,8 @@ import { useParams, Navigate } from "react-router-dom";
 import TrelloList from './trelloList';
 import TrelloBoardNav from './trelloBoardNav';
 import styled from 'styled-components';
-import { addList, selectListData, insertCard, insertList } from '../../store/slice/trelloListSlice';
-import { getBoardById } from '../../store/slice/trelloBoardSlice';
+import { addList, insertCardToList, getListById } from '../../store/slice/trelloListSlice';
+import { getBoardById, insertListToBoard } from '../../store/slice/trelloBoardSlice';
 
 // mul
 import AddIcon from '@mui/icons-material/Add';
@@ -64,20 +64,18 @@ export default function TrelloBoard() {
   const dispatch = useDispatch(); 
   const { boardId } = useParams();
   const board = useSelector(getBoardById(boardId));
-  const listData = useSelector(selectListData)
 
   if (board == null) {
     return <Navigate to="/404" />
   }
-
-  const lists = listData.lists
 
   // handlers
   const handleAddList = (e) => {
     e.stopPropagation(); 
     const data = {
       boardId: boardId,
-      listId: `list-${Math.round(Math.random() * 10000).toString()}`
+      listId: `list-${Math.round(Math.random() * 10000).toString()}`,
+      now: Date.now()
     }
     dispatch(addList(data));
     // await dispatch(addListToListOrder(data));
@@ -105,19 +103,19 @@ export default function TrelloBoard() {
     // setDraggedCard(null)
   }
 
-  const handleOnDragStart = (e, item, type) => {
+  const handleOnDragStart = (e, itemId, type) => {
     e.stopPropagation();
     // console.log('handleOnDragStart', type, item)
     // console.log(e.target)
 
     if (type === 'card' && draggedList == null) {
-      if (item === draggedCard)
+      if (itemId === draggedCard)
         return
-      setDraggedCard(item);
+      setDraggedCard(itemId);
     } else if (type === 'list' && draggedCard == null) {
-      if (item === draggedList)
+      if (itemId === draggedList)
         return
-      setDraggedList(item);
+      setDraggedList(itemId);
     }
   }
 
@@ -176,14 +174,15 @@ export default function TrelloBoard() {
   const handleListOnDragEnter = (e, index) => {
     e.stopPropagation();
     // console.log('handleListOnDragEnter target:', e.target  
-
-    if (draggedList == null || !draggable || draggedCard != null) {
-      // update card if card list is empty. [TODO]: move logic to another place
-      if (draggable && draggedCard && lists[index].cards.length === 0) {
-        insertCardToStore(index)
-      }
-      return
-    }
+    const listId = board.lists[index]
+    
+    // if (draggedList == null || !draggable || draggedCard != null) {
+    //   // update card if card list is empty. [TODO]: move logic to another place
+    //   if (draggable && draggedCard && lists[index].cards.length === 0) {
+    //     insertCardToStore(index)
+    //   }
+    //   return
+    // }
 
     const box = e.target.getBoundingClientRect()
 
@@ -193,7 +192,7 @@ export default function TrelloBoard() {
     if (e.clientX > box.right + box.width / 2) {
       ListIndex++
     } 
-    if (ListIndex < lists.length && lists[ListIndex].id === draggedList.id)
+    if (ListIndex < board.lists.length && board.lists[ListIndex] === draggedList.id)
       return
 
     // temperately disable draggle
@@ -207,7 +206,7 @@ export default function TrelloBoard() {
       listOrder: index,
       draggedList: draggedList
     }
-    dispatch(insertList(inputData));
+    dispatch(insertListToBoard(inputData));
 
   }
 
@@ -241,18 +240,18 @@ export default function TrelloBoard() {
         </TrelloBoardHeader>
         <TrelloBoardContent>
           <TrelloBoardContentContainer>
-            {lists.map((list, index) => {
+            {board.lists.map((listId, index) => {
                 return (
                   <TrelloListWrapper 
-                    key={list.id} 
+                    key={listId} 
                     onDragEnd={event => handleOnDragEnd(event)}  
                     onDragEnter={event => handleListOnDragEnter(event, index)} 
-                    onDragStart={event => handleOnDragStart(event, list, 'list')}
+                    onDragStart={event => handleOnDragStart(event, listId, 'list')}
                     onDrop={event => handleOnDrop(event)}
                     >
                     <TrelloList                     
-                      key={list.id} 
-                      list={list} 
+                      key={listId} 
+                      listId={listId} 
                       order={index} 
                       draggedCard = {draggedCard}
                       draggedList = {draggedList}
