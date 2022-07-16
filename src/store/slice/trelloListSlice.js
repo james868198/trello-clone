@@ -13,7 +13,7 @@ export const trelloListSlice = createSlice({
             if (boardId && listId && now) {
                 const list = {
                     id: listId,
-                    title: `${listId}-default-title`,
+                    title: `${listId}`,
                     cards: [],
                     boardId: boardId,
                     created: now,
@@ -58,6 +58,12 @@ export const trelloListSlice = createSlice({
                     delete state.lists[id]
             } 
         },
+        addCardToList: (state, action) => {
+            const { listId, cardId } = action.payload
+            const list = state.lists[listId]
+            if (list && cardId)
+                list.cards.push(cardId)
+        },
         insertCardToList: (state, action) => {
             const { listId, order, draggedCard} = action.payload
 
@@ -89,13 +95,13 @@ export const trelloListSlice = createSlice({
           const { listId, cardId } = action.payload;
           const list = state.lists[listId]
           if (list && cardId)
-            list.cards.filter(id => id !== cardId)
+            list.cards = list.cards.filter(id => id !== cardId)
         },
     }
 })
 
 // export actions
-export const { addList, updateListTitle, removeListById, removeListByBoardId, insertCardToList, removeCard, removeCardFromList} = trelloListSlice.actions;
+export const { addList, updateListTitle, removeListById, removeListByBoardId, addCardToList, insertCardToList, removeCard, removeCardFromList} = trelloListSlice.actions;
 
 export const getListById = (listId) => (state) => state.trelloList.lists.hasOwnProperty(listId)? state.trelloList.lists[listId] : null
 

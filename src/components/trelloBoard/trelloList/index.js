@@ -1,6 +1,10 @@
 import React, { useState, useEffect, useRef, useLayoutEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { addCard, updateListTitle, removeListById, getListById } from '../../../store/slice/trelloListSlice';
+import {updateListTitle, removeListById, getListById, addCardToList } from '../../../store/slice/trelloListSlice';
+import {removeListFromBoard } from '../../../store/slice/trelloBoardSlice';
+
+import { addCard } from '../../../store/slice/trelloCardSlice';
+
 import MoreMenu from '../../common/MoreMenu';
 
 // mui
@@ -101,6 +105,8 @@ export default function TrelloList({listId, order, ...props}) {
       titleRef.current.value = list.title
   });
   
+  if (!list)
+    return
   // handlers
   const eventHandler = (callback) => (e) => {
     e.stopPropagation(); 
@@ -109,26 +115,27 @@ export default function TrelloList({listId, order, ...props}) {
   }  
 
   const  handleAddCard = () => {
-    console.log('handleAddCard')
+    console.log('handleAddCard', list)
     const cardId = `card-${Math.round(Math.random() * 10000).toString()}`
+    const now = Date.now()
     const inputData = {
-      order: order,
-      card: {
-        id: cardId,
-        title: `${cardId}-title`,
-        description: "",
-        listId: list.id
-      }
+      cardId: cardId,
+      listId: list.id,
+      now: now
     }
     dispatch(addCard(inputData))
+    dispatch(addCardToList(inputData))
+
   }
   const handleRemoveList = () => {
     console.log('handleRemoveList', list)
     if(list == null)
       return
     const inputData = {
-      listId: list.id
+      listId: list.id,
+      boardId: list.boardId
     }
+    dispatch(removeListFromBoard(inputData))
     dispatch(removeListById(inputData))
   }
 
@@ -137,9 +144,9 @@ export default function TrelloList({listId, order, ...props}) {
     let newTitle = null
     if(titleRef && titleRef.current && titleRef.current.value)
       newTitle = titleRef.current.value
-    if (newTitle != null && newTitle !== list.title) {
+    if (list && newTitle != null && newTitle !== list.title) {
       const inputData = {
-        order: order,
+        listId: list.id,
         title: newTitle
       }
       dispatch(updateListTitle(inputData))
@@ -160,8 +167,8 @@ export default function TrelloList({listId, order, ...props}) {
   }
 
   const isCardDragged = (card) => {
-    if (card && draggedCard)
-      return card.id === draggedCard.id
+    // if (card && draggedCard)
+    //   return card.id === draggedCard.id
     return false
   }
 

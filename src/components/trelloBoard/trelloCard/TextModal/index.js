@@ -72,12 +72,13 @@ text-align: left;
 export default function TextModal({cardId, open, handleCloseModal}) {
     const card = useSelector(getCardById(cardId));
     const dispatch = useDispatch();  
-
     const titleRef = useRef(null)
+    
     useEffect(() => {
         if (card && titleRef && titleRef.current)
             titleRef.current.value = card.title
-    })
+    }, [])
+  
 
     const handleSaveChange = (e) => {
         e.stopPropagation();
@@ -91,9 +92,15 @@ export default function TextModal({cardId, open, handleCloseModal}) {
         }
         handleCloseModal()
     }
+
+    const handleModalOnClick = (e) => {
+        e.stopPropagation()
+        handleCloseModal()
+    }
+
     return(
         <Modal open={open}>
-            <ModalBackground onClick={handleCloseModal}></ModalBackground>
+            <ModalBackground onClick={event => handleModalOnClick(event)}></ModalBackground>
             <ModalContent>
                 <ModalBody>
                     <TextField ref={titleRef} 

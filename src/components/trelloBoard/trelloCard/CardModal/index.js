@@ -109,7 +109,7 @@ export default function CardModal({cardId, open, handleCloseModal}) {
     const card = useSelector(getCardById(cardId))
     const dispatch = useDispatch()
     
-    if (card == null)
+    if (card == null) 
         return
 
     // handlers
@@ -123,6 +123,11 @@ export default function CardModal({cardId, open, handleCloseModal}) {
         dispatch(updateCardDescription(inputData))
     }
 
+    const handleCloseModalOnClick = (e) => {
+        e.stopPropagation()
+        handleCloseModal()
+    }
+    
     // components
     const LabelIcon = (props) => {
         return (
@@ -134,7 +139,7 @@ export default function CardModal({cardId, open, handleCloseModal}) {
 
     const CloseButton = () => {
         return (
-            <CloseButtonContainer onClick={handleCloseModal}>
+            <CloseButtonContainer onClick={event => handleCloseModalOnClick(event)}>
                 <CloseIconButton/>
             </CloseButtonContainer>
         )
@@ -202,7 +207,7 @@ export default function CardModal({cardId, open, handleCloseModal}) {
             aria-labelledby="transition-modal-title"
             aria-describedby="transition-modal-description"
             open={open}
-            onClose={handleCloseModal}
+            onClose={event => handleCloseModalOnClick(event)}
             closeAfterTransition
             BackdropComponent={Backdrop}
             BackdropProps={{

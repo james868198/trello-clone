@@ -96,7 +96,7 @@ export const trelloBoardsSlice = createSlice({
         const { boardId, listId } = action.payload;
         const board = state.boards[boardId]
         if (board && listId)
-            board.lists.filter(listData => listData !== listId)
+          board.lists = board.lists.filter(listData => listData !== listId)
     }
   }
 })

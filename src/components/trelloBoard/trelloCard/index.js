@@ -79,11 +79,6 @@ export default function TrelloCard({cardId, ...props}) {
     const [showTextModal, setShowTextModal] = useState(false);
     const [showCardModal, setShowCardModal] = useState(false);
     const card = useSelector(getCardById(cardId));
-
-    // [TODO] replace temporary solution by updating redux card slice
-    const CardCopy = useMemo(() => Object.assign(card), [card]);
-
-    const {order, listOrder} = props
     
     if (!card)
         return null
@@ -132,10 +127,10 @@ export default function TrelloCard({cardId, ...props}) {
 
     return (
         <Container key={card.id} onClick={event => handleShowModal(event, setShowCardModal, true)}>
-            <TextModal card={CardCopy} open={showTextModal} handleCloseModal={event => handleShowModal(event, setShowTextModal, false)}/>
+            <TextModal cardId={cardId} open={showTextModal} handleCloseModal={() => setShowTextModal(false)}/>
             <Title/>
             <StatusList/>
-            <CardModal card={CardCopy} open={showCardModal}  handleCloseModal={(event) => (handleShowModal(event, setShowCardModal, false))}/>
+            <CardModal cardId={cardId} open={showCardModal}  handleCloseModal={() => setShowCardModal(false)}/>
         </Container>
     )
     

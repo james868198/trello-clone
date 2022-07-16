@@ -6,7 +6,7 @@ import TrelloList from './trelloList';
 import TrelloBoardNav from './trelloBoardNav';
 import styled from 'styled-components';
 import { addList, insertCardToList, getListById } from '../../store/slice/trelloListSlice';
-import { getBoardById, insertListToBoard } from '../../store/slice/trelloBoardSlice';
+import { getBoardById, insertListToBoard, addListToBoard } from '../../store/slice/trelloBoardSlice';
 
 // mul
 import AddIcon from '@mui/icons-material/Add';
@@ -58,8 +58,11 @@ width: 275px;
 export default function TrelloBoard() {
 
   const [draggable, setDraggable] = useState(true)
-  const [draggedCard, setDraggedCard] = useState(null)
-  const [draggedList, setDraggedList] = useState(null)
+  const draggedCard = useRef(null)
+  const draggedList = useRef(null)
+
+  // const [draggedCard, setDraggedCard] = useState(null)
+  // const [draggedList, setDraggedList] = useState(null)
 
   const dispatch = useDispatch(); 
   const { boardId } = useParams();
@@ -72,50 +75,52 @@ export default function TrelloBoard() {
   // handlers
   const handleAddList = (e) => {
     e.stopPropagation(); 
-    const data = {
+    const listId = `list-${Math.round(Math.random() * 10000).toString()}`
+    const inputData = {
       boardId: boardId,
-      listId: `list-${Math.round(Math.random() * 10000).toString()}`,
+      listId: listId,
       now: Date.now()
     }
-    dispatch(addList(data));
-    // await dispatch(addListToListOrder(data));
+    dispatch(addList(inputData));
+    dispatch(addListToBoard(inputData));
   };
 
   // dnd
-  const insertCardToStore = (listIndex, cardIndex = 1) => {
-    // update card position
-    if (listIndex == null || draggedCard == null)
-      return
+  
+  // const insertCardToStore = (listIndex, cardIndex = 1) => {
+  //   // update card position
+  //   if (listIndex == null || draggedCard == null)
+  //     return
 
-    let newCard = draggedCard
-    if (lists[listIndex].id !== draggedCard.listid) {
-      newCard = Object.assign({}, draggedCard)
-      newCard.listId = lists[listIndex].id
-    }
-    setDraggedCard(newCard)
-    const inputData = {
-      listOrder: listIndex,
-      cardOrder: cardIndex,
-      draggedCard: draggedCard,
-      newCard: newCard
-    }
-    dispatch(insertCard(inputData))
-    // setDraggedCard(null)
-  }
+  //   let newCard = draggedCard
+  //   if (lists[listIndex].id !== draggedCard.listid) {
+  //     newCard = Object.assign({}, draggedCard)
+  //     newCard.listId = lists[listIndex].id
+  //   }
+  //   setDraggedCard(newCard)
+  //   const inputData = {
+  //     listOrder: listIndex,
+  //     cardOrder: cardIndex,
+  //     draggedCard: draggedCard,
+  //     newCard: newCard
+  //   }
+  //   dispatch(insertCard(inputData))
+  //   // setDraggedCard(null)
+  // }
 
-  const handleOnDragStart = (e, itemId, type) => {
+  const handleOnDragStart = (e, id, type) => {
     e.stopPropagation();
     // console.log('handleOnDragStart', type, item)
     // console.log(e.target)
 
     if (type === 'card' && draggedList == null) {
-      if (itemId === draggedCard)
+      if (draggedCard && id === draggedCard.current)
         return
-      setDraggedCard(itemId);
+      draggedCard.current = id
     } else if (type === 'list' && draggedCard == null) {
-      if (itemId === draggedList)
+      if (draggedCard && id === draggedList.current)
         return
-      setDraggedList(itemId);
+      draggedList.current = id
     }
   }
 
@@ -123,58 +128,48 @@ export default function TrelloBoard() {
     e.stopPropagation();
     // console.log('handleOnDragEnd',draggedList, draggedCard)
     if (draggedCard) 
-      setDraggedCard(null);
+      draggedCard.current = null
     if (draggedList)
-      setDraggedList(null);
+      draggedList.current = null
   }
-
-  const handleOnDrop = (e) => {
-    e.stopPropagation();
-    // console.log('handleOnDrop', draggedCard)
-    if (draggedCard) 
-      setDraggedCard(null);
-    if (draggedList)
-      setDraggedList(null);
-  }
-
   
   const handleCardOnDragEnter = (e, index, ListOrder) => {
     e.stopPropagation();
     // console.log('handleOnDragEnter draggedCard:', draggedCard)
 
-    if (draggedCard == null || !draggable || draggedList != null)
-      return
-    const list = lists[ListOrder];
+    // if (draggedCard == null || !draggable || draggedList != null)
+    //   return
+    // const list = lists[ListOrder];
     
-    if (lists[ListOrder].cards[index].id === draggedCard.id)
-      return
-    // get box height and width
-    const box = e.target.getBoundingClientRect()
+    // if (lists[ListOrder].cards[index].id === draggedCard.id)
+    //   return
+    // // get box height and width
+    // const box = e.target.getBoundingClientRect()
 
-    let cardIndex = index
+    // let cardIndex = index
 
-    // check if the Y of the dragged card higher than the middle of the box
-    if (e.clientY > box.top + box.height / 2) {
-      cardIndex ++
-    } 
-    // console.log('handleOnDragEnter', list.cards[index].id, draggedCard.id)
-    if (cardIndex < list.cards.length && list.cards[cardIndex].id === draggedCard.id)
-      return
+    // // check if the Y of the dragged card higher than the middle of the box
+    // if (e.clientY > box.top + box.height / 2) {
+    //   cardIndex ++
+    // } 
+    // // console.log('handleOnDragEnter', list.cards[index].id, draggedCard.id)
+    // if (cardIndex < list.cards.length && list.cards[cardIndex].id === draggedCard.id)
+    //   return
 
-    // temperately disable draggle
-    setDraggable(false)
-    setTimeout(() => {
-      setDraggable(true)
-    }, 100);
+    // // temperately disable draggle
+    // setDraggable(false)
+    // setTimeout(() => {
+    //   setDraggable(true)
+    // }, 100);
 
-    // update card position
-    insertCardToStore(ListOrder, index)
+    // // update card position
+    // insertCardToStore(ListOrder, index)
   }
 
   const handleListOnDragEnter = (e, index) => {
     e.stopPropagation();
     // console.log('handleListOnDragEnter target:', e.target  
-    const listId = board.lists[index]
+    // const listId = board.lists[index]
     
     // if (draggedList == null || !draggable || draggedCard != null) {
     //   // update card if card list is empty. [TODO]: move logic to another place
@@ -184,29 +179,29 @@ export default function TrelloBoard() {
     //   return
     // }
 
-    const box = e.target.getBoundingClientRect()
+    // const box = e.target.getBoundingClientRect()
 
-    let ListIndex = index
+    // let ListIndex = index
     
-    // check if the Y of the dragged list higher than the middle of the box
-    if (e.clientX > box.right + box.width / 2) {
-      ListIndex++
-    } 
-    if (ListIndex < board.lists.length && board.lists[ListIndex] === draggedList.id)
-      return
+    // // check if the Y of the dragged list higher than the middle of the box
+    // if (e.clientX > box.right + box.width / 2) {
+    //   ListIndex++
+    // } 
+    // if (ListIndex < board.lists.length && board.lists[ListIndex] === draggedList.id)
+    //   return
 
-    // temperately disable draggle
-    setDraggable(false)
-    setTimeout(() => {
-      setDraggable(true)
-    }, 100);
+    // // temperately disable draggle
+    // setDraggable(false)
+    // setTimeout(() => {
+    //   setDraggable(true)
+    // }, 100);
      
-    // update store
-    const inputData = {
-      listOrder: index,
-      draggedList: draggedList
-    }
-    dispatch(insertListToBoard(inputData));
+    // // update store
+    // const inputData = {
+    //   listOrder: index,
+    //   draggedList: draggedList
+    // }
+    // dispatch(insertListToBoard(inputData));
 
   }
 
@@ -247,7 +242,6 @@ export default function TrelloBoard() {
                     onDragEnd={event => handleOnDragEnd(event)}  
                     onDragEnter={event => handleListOnDragEnter(event, index)} 
                     onDragStart={event => handleOnDragStart(event, listId, 'list')}
-                    onDrop={event => handleOnDrop(event)}
                     >
                     <TrelloList                     
                       key={listId} 

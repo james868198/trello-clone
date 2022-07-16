@@ -15,7 +15,7 @@ export const trelloCardSlice = createSlice({
             
             const card = {
                 id: cardId,
-                name: cardId + '-default-name',
+                title: cardId + '-default-name',
                 listId: listId,
                 description: null,
                 created: now,
