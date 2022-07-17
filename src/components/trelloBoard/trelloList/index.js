@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useRef, useLayoutEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {updateListTitle, removeListById, getListById, addCardToList } from '../../../store/slice/trelloListSlice';
 import {removeListFromBoard } from '../../../store/slice/trelloBoardSlice';
+import { useDNDContext }  from '../DNDContext';
 
 import { addCard } from '../../../store/slice/trelloCardSlice';
 
@@ -92,11 +93,16 @@ right: 10px;
 `
 
 
-export default function TrelloList({listId, order, ...props}) {
+export default function TrelloList({listId, ...props}) {
   const titleRef = useRef(null)
   const dispatch = useDispatch()  
-  const {handleOnDragStart, handleOnDragEnd, handleCardOnDragEnter, draggedCard, draggedList} = props
   const list = useSelector(getListById(listId));
+  const {
+    draggedList,
+    handleOnDragStart,
+    handleOnDragEnd,
+    handleListOnDragEnter
+  } = useDNDContext()
 
   useEffect(() => {
     if (!list)
@@ -160,11 +166,11 @@ export default function TrelloList({listId, order, ...props}) {
     }
   }
 
-  const isListDragged = (list) => {
-    if (list && draggedList)
-      return list.id === draggedList.id
-    return false
-  }
+  // const isListDragged = (list) => {
+  //   if (list && draggedList)
+  //     return list.id === draggedList.id
+  //   return false
+  // }
 
   const isCardDragged = (card) => {
     // if (card && draggedCard)
@@ -226,7 +232,14 @@ export default function TrelloList({listId, order, ...props}) {
   }
 
   return (
-    <Container draggable >
+    <Container 
+      draggable 
+      id={listId} 
+      onDragEnd={event => handleOnDragEnd(event)}  
+      onDragStart={event => handleOnDragStart(event)}
+      onDragEnter={event => handleListOnDragEnter(event, props.index)} 
+
+      >
       <Header>
         <TrelloListTitle/>
         <More/>
@@ -234,16 +247,12 @@ export default function TrelloList({listId, order, ...props}) {
       <Content>
         {list.cards.map((cardId, index) => {
           return (
-            <CardWrapper 
-              dragged={isCardDragged(cardId)} 
-              draggable
+            <TrelloCard 
+              cardId={cardId} 
               key={cardId} 
-              onDragEnd={event => handleOnDragEnd(event)}  
-              onDragEnter={event => handleCardOnDragEnter(event, index, order)} 
-              onDragStart={event => handleOnDragStart(event, cardId, 'card')} >
-              <TrelloCard cardId={cardId} order={index} listOrder={order} /> 
-            </CardWrapper>
-          )
+              index={index}
+              /> 
+            )
         })}
       </Content>
       <Footer>

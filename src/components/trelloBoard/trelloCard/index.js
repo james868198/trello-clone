@@ -2,7 +2,7 @@
 import React, { useState, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { getCardById } from '../../../store/slice/trelloCardSlice';
-
+import { useDNDContext }  from '../DNDContext';
 import styled from 'styled-components';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import TextModal from './TextModal';
@@ -79,7 +79,10 @@ export default function TrelloCard({cardId, ...props}) {
     const [showTextModal, setShowTextModal] = useState(false);
     const [showCardModal, setShowCardModal] = useState(false);
     const card = useSelector(getCardById(cardId));
-    
+    const {
+        draggedCard,
+        handleCardOnDragEnter
+      } = useDNDContext()
     if (!card)
         return null
 
@@ -91,7 +94,7 @@ export default function TrelloCard({cardId, ...props}) {
             return
         callback(open)
     }
-    
+
     // component
     const StatusList = () => {
         if(!card.status) {
@@ -126,7 +129,12 @@ export default function TrelloCard({cardId, ...props}) {
     }
 
     return (
-        <Container key={card.id} onClick={event => handleShowModal(event, setShowCardModal, true)}>
+        <Container draggable 
+            key={card.id} 
+            id={cardId} 
+            onDragEnter={event => handleCardOnDragEnter(event, props.index, card.listId)} 
+            onClick={event => handleShowModal(event, setShowCardModal, true)}
+            >
             <TextModal cardId={cardId} open={showTextModal} handleCloseModal={() => setShowTextModal(false)}/>
             <Title/>
             <StatusList/>

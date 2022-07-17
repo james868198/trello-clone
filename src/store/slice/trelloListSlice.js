@@ -64,32 +64,52 @@ export const trelloListSlice = createSlice({
             if (list && cardId)
                 list.cards.push(cardId)
         },
-        insertCardToList: (state, action) => {
-            const { listId, order, draggedCard} = action.payload
+        swapCardInBoard:(state, action) => {
+            const {order, card} = action.payload
+            if (card == null)
+                return 
 
-            if (draggedCard == null ||
-                !state.lists.hasOwnProperty(listId) || 
-                !state.lists.hasOwnProperty(draggedCard.listId))
+            const list = state.lists[card.listId]
+
+            if (list == null)
+                return
+
+            const index = list.cards.findIndex(id => id === card.id)
+            if (index === order || order >= list.cards.length)
+                return
+            list.cards[index] = list.cards[order]
+            list.cards[order] = card.id                
+        },
+        insertCardToList: (state, action) => {
+            const { listId, order, cardId, prevListId} = action.payload
+
+            if (cardId == null || order === null)
+                return
+
+            const list = state.lists[listId]
+            const prevList = state.lists[prevListId]
+
+            if (list == null || prevList == null)
                 return
             
-            if (draggedCard.listId === listId) {
+            if (prevListId === listId) {
                 // swap
-                const index = state.lists[listId].cards.findIndex(id => id === draggedCard.id)
+                const index = list.cards.findIndex(id => id === cardId)
                 if (index === order)
                     return
-                state.lists[listId].cards[index] = state.lists[listId].cards[order]
-                state.lists[listId].cards[order] = draggedCard.id
+                list.cards[index] = list.cards[order]
+                list.cards[order] = cardId
                 return 
             }
 
             // two cards are in different list. First remove card from original position
-            state.lists[draggedCard.listId].cards = state.lists[draggedCard.listId].cards.filter(id => id !== draggedCard.id)
+            prevList.cards = prevList.cards.filter(id => id !== cardId)
             
             // insert card to new position
-            if (order < state.lists[listId].cards.length)
-                state.lists[listId].cards.splice(order, 0, draggedCard)
+            if (order < list.cards.length)
+                list.cards.splice(order, 0, cardId)
             else
-                state.lists[listId].cards.push(draggedCard)          
+                list.cards.push(cardId)          
         },
         removeCardFromList: (state, action) => {
           const { listId, cardId } = action.payload;
@@ -101,7 +121,7 @@ export const trelloListSlice = createSlice({
 })
 
 // export actions
-export const { addList, updateListTitle, removeListById, removeListByBoardId, addCardToList, insertCardToList, removeCard, removeCardFromList} = trelloListSlice.actions;
+export const { addList, updateListTitle, updateListBoardId, removeListById, removeListByBoardId, addCardToList, swapCardInBoard, insertCardToList, removeCard, removeCardFromList} = trelloListSlice.actions;
 
 export const getListById = (listId) => (state) => state.trelloList.lists.hasOwnProperty(listId)? state.trelloList.lists[listId] : null
 

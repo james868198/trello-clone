@@ -69,7 +69,7 @@ export const trelloCardSlice = createSlice({
 })
 
 // export actions
-export const { addCard, updateCardTitle, updateCardDescription, removeCardById, removeCardByListId } = trelloCardSlice.actions;
+export const { addCard, updateCardTitle, updateCardDescription, updateCardListId, removeCardById, removeCardByListId } = trelloCardSlice.actions;
 
 // select board
 export const getCardById = (cardId) => (state) => state.trelloCard.cards.hasOwnProperty(cardId)? state.trelloCard.cards[cardId] : null
