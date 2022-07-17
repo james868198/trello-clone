@@ -8,9 +8,6 @@ export function useDNDContext() {
     return useContext(DNDContext)
 }
 
-
-
-
 export default function DNDProvider(props) {
     const draggedCard = useRef(null)
     const draggedList = useRef(null)
@@ -76,41 +73,6 @@ export default function DNDProvider(props) {
         }
     }
     
-    // const handleOnDragEnter = (e) => {
-    //     e.stopPropagation();
-    //     if (e.target == null)
-    //         return  
-
-        
-    //     let type
-    //     let enterCardId
-    //     let enterListId
-
-    //     if (e.currentTarget && e.currentTarget.id) {
-    //         type = e.currentTarget.id.split("-")[0]
-    //         enterListId = type === 'list' ? e.currentTarget.id: null
-    //     }
-            
-    //     if (e.target && e.target.id) {
-    //         type = e.target.id.split("-")[0]
-    //         enterCardId = type === 'card' ? e.target.id: null
-    //         enterListId = type === 'list' ? e.target.id: null
-    //     }
-
-    //     // get box height and width
-    //     const box = e.target.getBoundingClientRect()
-    //     // console.log('handleOnDragEnter type:', type, draggedCard, draggedList, enterCardId, enterListId)
-    //     if (type === 'card' && draggedCard.current) {
-    //         const over = (e.clientY > box.top + box.height / 2) ? 1 : 0
-    //         updateCardOrder(draggedCard.current, enterCardId, over)
-    //     } else if (type === 'list' && draggedCard.current) {
-    //         moveCardToList(draggedCard.current, enterListId)
-    //     } else if (type === 'list' && draggedList.current) {
-    //         const over = (e.clientX > box.right + box.width / 2) ? 1 : 0
-    //         swapList(draggedList.current, enterListId, over)
-    //     }
-    // }
-
     return (
         <DNDContext.Provider value={{
             draggedList,
