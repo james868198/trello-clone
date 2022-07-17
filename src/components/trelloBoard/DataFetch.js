@@ -1,5 +1,5 @@
 import store from "../../store"
-import { addList, insertCardToList, updateListBoardId, swapCardInBoard } from '../../store/slice/trelloListSlice'
+import { addList, insertCardToList, updateListBoardId, addCardToList, swapCardInBoard } from '../../store/slice/trelloListSlice'
 import { getBoardById, insertListToBoard, addListToBoard, swapListInBoard } from '../../store/slice/trelloBoardSlice'
 import { getCardById, updateCardListId } from '../../store/slice/trelloCardSlice'
 
@@ -14,47 +14,81 @@ export function createList(boardId) {
     store.dispatch(addListToBoard(inputData));
 }
 
-export function updateListOrder(index, listId) {
+export function swapList(targetListId, enterListId, over) {
 
-    const list = store.getState().trelloList.lists[listId]
-    // update store
-    let inputData = {
-        order: index,
-        list: list,
-    }
-    store.dispatch(swapListInBoard(inputData))
+    const targetList = store.getState().trelloList.lists[targetListId]
+    const enterList = store.getState().trelloList.lists[enterListId]
+  
+    if (targetList == null || enterList == null || targetList.boardId !== enterList.boardId)
+        return
+    store.dispatch(swapListInBoard({
+        boardId: targetList.boardId,
+        targetListId: targetListId,
+        enterListId: enterListId,
+        over: over
+    }))
 }
 
-export function updateCardOrder(listId, index, cardId) {
+export function moveListToBoard(targetListId, boardId) {
+   // TODO
+}
+
+export function moveCardToList(targetCardId, enterListId) {
     // check if the Y of the dragged list higher than the middle of the box
-    const list = store.getState().trelloList.lists[listId]
-    const card = store.getState().trelloCard.cards[cardId]
-    if (card == null || list == null)
+    const enterList = store.getState().trelloList.lists[enterListId]
+    const targetCard = store.getState().trelloCard.cards[targetCardId]
+
+    if (enterList == null || targetCard == null || targetCard.listId === enterListId || enterList.cards.length > 0)
         return
-    if (index < list.cards.length && list.cards[index].id === cardId)
-        return
-    
-    const prevListId = card.listId
+    const targetCardListId = targetCard.listId
 
     // update store
-
-    if (listId === prevListId) {
-        store.dispatch(swapCardInBoard( {
-            card: card,
-            order: index
-        }))
-        return
-    }
+  
     store.dispatch(updateCardListId( {
-        cardId: cardId,
-        listId: listId
+        cardId: targetCardId,
+        listId: enterListId
     }))
     
     store.dispatch(insertCardToList({
-        listId: listId,
-        order: index,
-        cardId: cardId,
-        prevListId: prevListId
+        targetCardId: targetCardId,
+        targetListId: targetCardListId,
+        enterListId: enterListId,
+    }))
+   
+}
+
+export function updateCardOrder(targetCardId, enterCardId, over) {
+    const targetCard = store.getState().trelloCard.cards[targetCardId]
+    const enterCard = store.getState().trelloCard.cards[enterCardId]
+
+    if (targetCard == null || enterCard == null || targetCardId === enterCardId)
+        return
+    
+    const targetCardListId = targetCard.listId
+
+    // swap cards if in the same list
+    if (enterCard.listId === targetCard.listId) {
+        store.dispatch(swapCardInBoard( {
+            listId: targetCard.listId,
+            targetCardId: targetCardId,
+            enterCardId: enterCardId,
+            over: over
+        }))
+        return
+    }
+
+    // // insert card to another list
+    store.dispatch(updateCardListId( {
+        cardId: targetCardId,
+        listId: enterCard.listId
+    }))
+    
+    store.dispatch(insertCardToList({
+        targetCardId: targetCardId,
+        targetListId: targetCardListId,
+        enterCardId: enterCardId,
+        enterListId: enterCard.listId,
+        over: over 
     }))
    
 }

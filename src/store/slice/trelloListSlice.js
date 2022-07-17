@@ -65,51 +65,50 @@ export const trelloListSlice = createSlice({
                 list.cards.push(cardId)
         },
         swapCardInBoard:(state, action) => {
-            const {order, card} = action.payload
-            if (card == null)
+            const {listId, targetCardId, enterCardId, over} = action.payload
+            if (listId == null || targetCardId == null || enterCardId == null)
                 return 
 
-            const list = state.lists[card.listId]
+            const list = state.lists[listId]
 
             if (list == null)
                 return
 
-            const index = list.cards.findIndex(id => id === card.id)
-            if (index === order || order >= list.cards.length)
+            const targetIndex = list.cards.findIndex(id => id === targetCardId)
+            const enterIndex = list.cards.findIndex(id => id === enterCardId) + over
+
+            if (targetIndex === enterIndex || enterIndex >= list.cards.length)
                 return
-            list.cards[index] = list.cards[order]
-            list.cards[order] = card.id                
+            list.cards[targetIndex] = list.cards[enterIndex]
+            list.cards[enterIndex] = targetCardId               
         },
         insertCardToList: (state, action) => {
-            const { listId, order, cardId, prevListId} = action.payload
+            const { targetCardId, targetListId, enterCardId, enterListId, over} = action.payload
 
-            if (cardId == null || order === null)
+            if (targetCardId == null || targetListId == null || enterListId == null || targetListId === enterListId)
                 return
 
-            const list = state.lists[listId]
-            const prevList = state.lists[prevListId]
+            const targetList = state.lists[targetListId]
+            const enterList = state.lists[enterListId]
 
-            if (list == null || prevList == null)
+            if (targetList == null || enterList == null)
                 return
+
             
-            if (prevListId === listId) {
-                // swap
-                const index = list.cards.findIndex(id => id === cardId)
-                if (index === order)
-                    return
-                list.cards[index] = list.cards[order]
-                list.cards[order] = cardId
-                return 
+            targetList.cards = targetList.cards.filter(id => id !== targetCardId)
+            
+            // add target card to the bottom of the list when enterCardId is empty
+            if (enterCardId == null) {
+                enterList.cards.push(targetCardId)
+                return
             }
 
-            // two cards are in different list. First remove card from original position
-            prevList.cards = prevList.cards.filter(id => id !== cardId)
+            const enterIndex = enterList.cards.findIndex(id => id === enterCardId) + over
             
-            // insert card to new position
-            if (order < list.cards.length)
-                list.cards.splice(order, 0, cardId)
+            if (enterIndex < enterList.cards.length)
+                enterList.cards.splice(enterIndex, 0, targetCardId)
             else
-                list.cards.push(cardId)          
+                enterList.cards.push(targetCardId)          
         },
         removeCardFromList: (state, action) => {
           const { listId, cardId } = action.payload;

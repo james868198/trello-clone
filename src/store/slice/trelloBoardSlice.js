@@ -65,51 +65,25 @@ export const trelloBoardsSlice = createSlice({
                 board.lists.push(listId)
         },
         swapListInBoard:(state, action) => {
-            const {order, list} = action.payload
-            if (list == null)
+            const {boardId, targetListId, enterListId, over} = action.payload
+            if (boardId == null || targetListId == null || enterListId == null)
                 return 
 
-            const board = state.boards[list.boardId]
+            const board = state.boards[boardId]
 
             if (board == null)
                 return
 
-            const index = board.lists.findIndex(id => id === list.id)
-            if (index === order || order >= board.lists.length)
+            const targetIndex = board.lists.findIndex(id => id === targetListId)
+            const enterIndex = board.lists.findIndex(id => id === enterListId) + over
+
+            if (targetIndex === enterIndex || enterIndex >= board.lists.length)
                 return
-            board.lists[index] = board.lists[order]
-            board.lists[order] = list.id                
+            board.lists[targetIndex] = board.lists[enterIndex]
+            board.lists[enterIndex] = targetListId           
         },
         insertListToBoard: (state, action) => {
-            const { boardId, order, list} = action.payload
-
-            if (list == null)
-                return 
-
-            const board = state.boards[boardId]
-            const prevBoard = state.boards[list.boardId]
-
-            if (board == null || prevBoard == null)
-                return
-            
-            if (list.boardId === boardId) {
-                const index = board.lists.findIndex(id => id === list.id)
-                if (index === order)
-                    return
-                console.log("insertListToBoard swap")
-                board.lists[index] = board.lists[order]
-                board.lists[order] = list.id
-                return 
-            }
-            
-            // two cards are in different list. First remove card from original position
-            prevBoard.lists = prevBoard.lists.filter(id => id !== list.id)
-            
-            // insert card to new position
-            if (order < state.boards[boardId].lists.length)
-                board.lists.splice(order, 0, list.id)
-            else
-                board.cards.push(list.id)
+            // TODO
         
         },
         removeListFromBoard: (state, action) => {

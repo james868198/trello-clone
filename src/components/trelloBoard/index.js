@@ -96,10 +96,7 @@ export default function TrelloBoard() {
         <TrelloBoardHeader>
           <TrelloBoardNav board={board}/>
         </TrelloBoardHeader>
-        <TrelloBoardContent
-            // onDragEnd={event => dnd.onDragEnd(event)}  
-            // onDragStart={event => handleOnDragStart(event)}
-          >
+        <TrelloBoardContent>
           <TrelloBoardContentContainer>
             {board.lists.map((listId, index) => {
                 return (

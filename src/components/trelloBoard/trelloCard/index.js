@@ -54,7 +54,9 @@ display: none;
 
 export const Container = styled.div`
 position: relative;
-width: 100%;
+margin-left:15px;
+margin-right:15px;
+margin-bottom:7px;
 height: 36px;
 border-radius: 3px;
 background-color: #ffffff;
@@ -80,8 +82,7 @@ export default function TrelloCard({cardId, ...props}) {
     const [showCardModal, setShowCardModal] = useState(false);
     const card = useSelector(getCardById(cardId));
     const {
-        draggedCard,
-        handleCardOnDragEnter
+        draggedCard
       } = useDNDContext()
     if (!card)
         return null
@@ -132,7 +133,6 @@ export default function TrelloCard({cardId, ...props}) {
         <Container draggable 
             key={card.id} 
             id={cardId} 
-            onDragEnter={event => handleCardOnDragEnter(event, props.index, card.listId)} 
             onClick={event => handleShowModal(event, setShowCardModal, true)}
             >
             <TextModal cardId={cardId} open={showTextModal} handleCloseModal={() => setShowTextModal(false)}/>

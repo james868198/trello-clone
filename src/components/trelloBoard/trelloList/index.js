@@ -30,6 +30,8 @@ background-color: ${LIST_BG_COLOR};
 color: ${LIST_COLOR};
 border-radius: 3px;
 `
+
+
 const ContainerSection = styled.div`
 position: relative;
 padding-left: 15px;
@@ -101,7 +103,7 @@ export default function TrelloList({listId, ...props}) {
     draggedList,
     handleOnDragStart,
     handleOnDragEnd,
-    handleListOnDragEnter
+    handleOnDragEnter
   } = useDNDContext()
 
   useEffect(() => {
@@ -232,33 +234,30 @@ export default function TrelloList({listId, ...props}) {
   }
 
   return (
-    <Container 
-      draggable 
-      id={listId} 
-      onDragEnd={event => handleOnDragEnd(event)}  
-      onDragStart={event => handleOnDragStart(event)}
-      onDragEnter={event => handleListOnDragEnter(event, props.index)} 
-
+      <Container
+        draggable 
+        id={listId} 
+        onDragEnd={event => handleOnDragEnd(event)}  
+        onDragStart={event => handleOnDragStart(event)}
+        onDragEnter={event => handleOnDragEnter(event)}
       >
-      <Header>
-        <TrelloListTitle/>
-        <More/>
-      </Header>
-      <Content>
+        <Header>
+          <TrelloListTitle/>
+          <More/>
+        </Header>
         {list.cards.map((cardId, index) => {
-          return (
-            <TrelloCard 
-              cardId={cardId} 
-              key={cardId} 
-              index={index}
-              /> 
-            )
+          if (cardId)
+            return (
+              <TrelloCard 
+                cardId={cardId} 
+                key={cardId} 
+                index={index}
+                /> 
+              )
         })}
-      </Content>
-      <Footer>
-        <AddCardBtn/>
-      </Footer>
-    </Container>
+        <Footer>
+          <AddCardBtn/>
+        </Footer>
+      </Container>
   )
-    
 }
