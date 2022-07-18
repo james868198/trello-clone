@@ -1,9 +1,9 @@
+import React, { useRef, useState } from 'react';
 import styled from 'styled-components'
 import Button from '@mui/material/Button'
-// import BasicMenu from '../../../common/BasicMenu'
-
+import CheckBoxOutlinedIcon from '@mui/icons-material/CheckBoxOutlined';
 import Divider from '@mui/material/Divider';
-
+import ChecklistMenu from './checklist/ChecklistMenu'
 const LABEL_COLOR = '#474747'
 const BTN_BG_COLOR = '#dfdfdf'
 const BTN_HOVER_BG_COLOR = '#c8c8c8'
@@ -60,6 +60,14 @@ export default function Operations() {
         )
     }
 
+    const Checklist = () => {
+        const button = <ModalBtn startIcon={<CheckBoxOutlinedIcon/>}>Checklist</ModalBtn>
+ 
+        return (
+            <ChecklistMenu button={button}/>
+        )
+    }
+    
     const AddToCards = () => {
 
         return (
@@ -67,7 +75,7 @@ export default function Operations() {
                 <Label>Add to card</Label>
                 <ModalBtn>Members</ModalBtn>
                 <ModalBtn>Labels</ModalBtn>
-                <ModalBtn>CheckList</ModalBtn>
+                <Checklist/>
                 <ModalBtn>Dates</ModalBtn>
                 <ModalBtn>Cover</ModalBtn>
             </Section>

@@ -3,7 +3,8 @@ import { addList, insertCardToList, updateListBoardId, addCardToList, swapCardIn
 import { getBoardById, insertListToBoard, addListToBoard, swapListInBoard } from '../../store/slice/trelloBoardSlice'
 import { getCardById, updateCardListId } from '../../store/slice/trelloCardSlice'
 
-export function createList(boardId) {
+// list
+function createList(boardId) {
     const listId = `list-${Math.round(Math.random() * 10000).toString()}`
     const inputData = {
         boardId: boardId,
@@ -14,7 +15,7 @@ export function createList(boardId) {
     store.dispatch(addListToBoard(inputData));
 }
 
-export function swapList(targetListId, enterListId, over) {
+function swapList(targetListId, enterListId, over) {
 
     const targetList = store.getState().trelloList.lists[targetListId]
     const enterList = store.getState().trelloList.lists[enterListId]
@@ -29,11 +30,11 @@ export function swapList(targetListId, enterListId, over) {
     }))
 }
 
-export function moveListToBoard(targetListId, boardId) {
+function moveListToBoard(targetListId, boardId) {
    // TODO
 }
 
-export function moveCardToList(targetCardId, enterListId) {
+function moveCardToList(targetCardId, enterListId) {
     // check if the Y of the dragged list higher than the middle of the box
     const enterList = store.getState().trelloList.lists[enterListId]
     const targetCard = store.getState().trelloCard.cards[targetCardId]
@@ -57,7 +58,7 @@ export function moveCardToList(targetCardId, enterListId) {
    
 }
 
-export function updateCardOrder(targetCardId, enterCardId, over) {
+function updateCardOrder(targetCardId, enterCardId, over) {
     const targetCard = store.getState().trelloCard.cards[targetCardId]
     const enterCard = store.getState().trelloCard.cards[enterCardId]
 
@@ -93,7 +94,26 @@ export function updateCardOrder(targetCardId, enterCardId, over) {
    
 }
 
-export function getListById(listId) { 
+function getListById(listId) { 
     const list = store.getState().trelloList.lists[listId]
     return list? list: null
+}
+
+// card
+
+// [TODO] addCard
+
+// checklist
+
+function addChecklist(name){
+
+}
+
+export {
+    createList,
+    swapList,
+    moveListToBoard,
+    moveCardToList,
+    updateCardOrder,
+    getListById
 }

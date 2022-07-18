@@ -7,6 +7,7 @@ import { useDNDContext }  from '../DNDContext';
 import { addCard } from '../../../store/slice/trelloCardSlice';
 
 import MoreMenu from '../../common/MoreMenu';
+import TextField from '../../common/TextField';
 
 // mui
 
@@ -42,7 +43,7 @@ padding-bottom: 15px;
 
 const Header = styled(ContainerSection)`
 padding-left: 15px;
-padding-right: 40px;
+padding-right: 50px;
 padding-top: 15px;
 `
 const Content = styled(ContainerSection)`
@@ -66,19 +67,6 @@ margin: 2px;
 opacity: ${({dragged}) => dragged ? '0.3' : '1'};
 `
 
-const TextField = styled.input`
-position: relative;
-font-size: 22px;
-border: none;
-background-color: ${LIST_BG_COLOR};
-color: ${LIST_COLOR};
-cursor: pointer;
-:focus {
-  background-color: white;
-  cursor: text;
-}
-
-`
 const FirstTitle =  styled.div`
 
 `
@@ -96,7 +84,6 @@ right: 10px;
 
 
 export default function TrelloList({listId, ...props}) {
-  const titleRef = useRef(null)
   const dispatch = useDispatch()  
   const list = useSelector(getListById(listId));
   const {
@@ -106,13 +93,6 @@ export default function TrelloList({listId, ...props}) {
     handleOnDragEnter
   } = useDNDContext()
 
-  useEffect(() => {
-    if (!list)
-      return
-    if (titleRef)
-      titleRef.current.value = list.title
-  });
-  
   if (!list)
     return
   // handlers
@@ -147,11 +127,7 @@ export default function TrelloList({listId, ...props}) {
     dispatch(removeListById(inputData))
   }
 
-  const handleChangeListTitle = () => {
-    
-    let newTitle = null
-    if(titleRef && titleRef.current && titleRef.current.value)
-      newTitle = titleRef.current.value
+  const handleChangeListTitle = (newTitle) => {
     if (list && newTitle != null && newTitle !== list.title) {
       const inputData = {
         listId: list.id,
@@ -159,13 +135,6 @@ export default function TrelloList({listId, ...props}) {
       }
       dispatch(updateListTitle(inputData))
     }    
-  }
-
-  const handleKeyDown = (e) => {
-    if (e.key === 'Enter') {
-      if (e.target)
-        e.target.blur()
-    }
   }
 
   // const isListDragged = (list) => {
@@ -193,11 +162,7 @@ export default function TrelloList({listId, ...props}) {
     return (
       <>
       <FirstTitle>
-        <TextField 
-          ref={titleRef}
-          onBlur={handleChangeListTitle} 
-          onKeyDown={event => handleKeyDown(event)}
-          />
+        <TextField text={list.title} handleTextFieldOnBlur={handleChangeListTitle} />
       </FirstTitle>
       <SecondTitle>{cardAmount} cards</SecondTitle>
       </>

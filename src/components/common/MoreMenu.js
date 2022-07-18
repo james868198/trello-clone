@@ -4,19 +4,16 @@ import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import BasicMenu from './BasicMenu'
 
 export default function MoreMenu(props) {
-  const MoreIcon = ()=>{
-    return (
-      <IconButton   
-        sx={{
-          color: '#3d3d3d',
-          '&:hover': {
-              backgroundColor: '#d1d2d5',
-        }}} 
-        shape="square"
-        >
-        <MoreHorizIcon sx={{fontSize: '18px'}}/>
-      </IconButton>
-    )
-  }
-  return (<BasicMenu {...props}><MoreIcon/></BasicMenu>)
+  const MoreIcon = <IconButton   
+    sx={{
+      color: '#3d3d3d',
+      '&:hover': {
+          backgroundColor: '#d1d2d5',
+    }}} 
+    shape="square"
+    >
+    <MoreHorizIcon sx={{fontSize: '18px'}}/>
+  </IconButton>
+
+  return (<BasicMenu {...props} button={MoreIcon}/>)
 }

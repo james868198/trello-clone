@@ -18,6 +18,8 @@ export const trelloCardSlice = createSlice({
                 title: cardId + '-default-name',
                 listId: listId,
                 description: null,
+                checklist: [],
+                comment: [],
                 created: now,
                 updated: now,
                 archived: false
@@ -64,12 +66,53 @@ export const trelloCardSlice = createSlice({
                 else
                     delete state.cards[id]
             } 
+        },
+        addChecklist: (state, action) => {
+            const { cardId, checklistId, name, now } = action.payload
+            if (state.cards.hasOwnProperty(cardId) || checklistId == null || now == null || name == null || name === "")
+                return
+            const checklist = {
+                id: checklistId,
+                name: name,
+                items: [],
+                created: now,
+                updated: now,
+                hidden: false
+            }
+            state.cards[cardId].checklist.push(checklist)
+        },
+        updateChecklist: (state, action) => {
+            const { cardId, checklistId, index, name, now } = action.payload
+            if (state.cards.hasOwnProperty(cardId) || checklistId == null || index == null || name == null|| name=== "")
+                return
+           
+            const checklist = state.cards[cardId].checklist
+            if (name && name !== "" && checklist.length>index && checklist[index].id === checklistId) {
+                checklist[index].name = name
+                checklist[index].now = now
+            }
+        },
+        removeChecklist: (state, action) => {
+            const { cardId, checklistId} = action.payload
+            if (state.cards.hasOwnProperty(cardId) || checklistId == null)
+                return
+            state.cards[cardId].checklist = state.cards[cardId].checklist.filter(list => list.id !== checklistId)
         }
     }
 })
 
 // export actions
-export const { addCard, updateCardTitle, updateCardDescription, updateCardListId, removeCardById, removeCardByListId } = trelloCardSlice.actions;
+export const { 
+    addCard, 
+    updateCardTitle, 
+    updateCardDescription, 
+    updateCardListId, 
+    removeCardById, 
+    removeCardByListId,
+    addChecklist,
+    updateChecklist,
+    removeChecklist,
+} = trelloCardSlice.actions;
 
 // select board
 export const getCardById = (cardId) => (state) => state.trelloCard.cards.hasOwnProperty(cardId)? state.trelloCard.cards[cardId] : null
