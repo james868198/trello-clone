@@ -5,6 +5,7 @@ import { updateCardDescription, getCardById } from '../../../../store/slice/trel
 
 import styled from 'styled-components';
 import Description from './Description';
+import Checklist from './Checklist'
 import Operations from './Operations'
 import CloseIconButton from '../../../common/buttons/CloseIconButton';
 // mui
@@ -24,6 +25,8 @@ position: absolute;
 top: 50%;
 left: 50%;
 transform: translate(-50%, -50%);
+max-height: 900px;
+overflow-y: scroll;
 `
 const ContainerInner = styled.div`
 position: relative;
@@ -32,9 +35,6 @@ display: flex;
 flex-direction: column;
 border-radius: 3px;
 border: 1px solid #000;
-overflow: hidden;
-min-width: 760px;
-
 `
 const ContainerMargin = styled.div`
 margin-left: 60px;
@@ -56,18 +56,16 @@ justify-content: space-between;
 
 const BottomContainerLeft = styled.div`
 position: relative;
-min-width: 400px;
-min-height: 500px;
-
-display: inline-box;
+width: 500px;
+margin-right: 15px;
+display: inline-flex;
 flex-direction: column;
 `
 
 const BottomContainerRight = styled.div`
 position: relative;
 min-width: 200px;
-
-display: inline-box;
+display: inline-flex;
 flex-direction: column;
 `
 
@@ -93,14 +91,11 @@ left: -40px;
 top: 0;
 color: #333333;
 `
+
 const Section = styled.div`
 position: relative;
 width: 100%;
-margin-right: 15px;
 margin-bottom: 20px;
-
-display: inline-flex;
-flex-direction: column;
 `
 
 
@@ -115,7 +110,6 @@ export default function CardModal({cardId, open, handleCloseModal}) {
     // handlers
 
     const handleUpdateDescription = (text) => {
-        console.log("handleUpdateDescription", text)
         const inputData = {
             cardId: cardId,
             description: text
@@ -181,6 +175,18 @@ export default function CardModal({cardId, open, handleCloseModal}) {
             </Section>
         )
     }
+    const ChecklistSection = () => {
+        if (card.checklist == null || card.checklist.length === 0)
+            return 
+
+        return(
+            <Section>
+                {card.checklist.map((checklist, index) => {
+                    return (<Checklist key={checklist.id} index={index} checklist={checklist}/>)
+                })}
+            </Section>
+        )
+    }
     const CommentSection = () => {
         return(
             <Section>
@@ -222,11 +228,12 @@ export default function CardModal({cardId, open, handleCloseModal}) {
                     <BottomContainer>
                         <BottomContainerLeft>
                             <DescriptionSection/>
+                            <ChecklistSection/>
                             <CommentSection/>
                             <ActivitySection/>
                         </BottomContainerLeft>
                         <BottomContainerRight>
-                            <Operations/>
+                            <Operations cardId={cardId}/>
                         </BottomContainerRight>
                     </BottomContainer>
                     <CloseButton/>

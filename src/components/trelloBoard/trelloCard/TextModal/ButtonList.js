@@ -33,15 +33,14 @@ export default function ButtonList() {
         return (
             <SectionContainer>
                 <Button 
-
                     sx={{
+                        color: '#ffffff',
                         fontSize: '14px',
                         background: 'rgba(0,0,0,.5)',
                         '&:hover': {
                             background: 'rgba(0,0,0,1)'
                         }
                     }}
-                    
                     {...props}
                 >
                     {props.children}

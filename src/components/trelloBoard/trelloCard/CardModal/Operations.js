@@ -1,9 +1,18 @@
 import React, { useRef, useState } from 'react';
 import styled from 'styled-components'
+import ChecklistMenu from './Checklist/ChecklistMenu'
+
+// mui
 import Button from '@mui/material/Button'
-import CheckBoxOutlinedIcon from '@mui/icons-material/CheckBoxOutlined';
 import Divider from '@mui/material/Divider';
-import ChecklistMenu from './checklist/ChecklistMenu'
+
+// icons
+import CheckBoxOutlinedIcon from '@mui/icons-material/CheckBoxOutlined';
+import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
+import BookmarkBorderOutlinedIcon from '@mui/icons-material/BookmarkBorderOutlined';
+import ScheduleOutlinedIcon from '@mui/icons-material/ScheduleOutlined';
+import AttachmentOutlinedIcon from '@mui/icons-material/AttachmentOutlined';
+
 const LABEL_COLOR = '#474747'
 const BTN_BG_COLOR = '#dfdfdf'
 const BTN_HOVER_BG_COLOR = '#c8c8c8'
@@ -37,7 +46,7 @@ font-size; 10px;
 font-weight: bold;
 `
 
-export default function Operations() {
+export default function Operations({cardId}) {
 
     const ModalBtn = (props) => {
         return (
@@ -46,13 +55,12 @@ export default function Operations() {
                     sx={{
                         justifyContent: "flex-start",
                         fontSize: '14px',
-                        backgroundColor: BTN_BG_COLOR,
-                        color: '#000000',
-                        '&:hover': {
-                            background: BTN_HOVER_BG_COLOR
-                        }
+                        paddingLeft: '15px',
                     }}
+                    variant="contained" 
+                    color="secondary"
                     fullWidth
+                    {...props}
                 >
                 {props.children}
                 </Button>
@@ -64,7 +72,7 @@ export default function Operations() {
         const button = <ModalBtn startIcon={<CheckBoxOutlinedIcon/>}>Checklist</ModalBtn>
  
         return (
-            <ChecklistMenu button={button}/>
+            <ChecklistMenu cardId={cardId} button={button}/>
         )
     }
     
@@ -73,11 +81,11 @@ export default function Operations() {
         return (
             <Section>
                 <Label>Add to card</Label>
-                <ModalBtn>Members</ModalBtn>
-                <ModalBtn>Labels</ModalBtn>
+                <ModalBtn startIcon={<AccountCircleOutlinedIcon/>}>Members</ModalBtn>
+                <ModalBtn startIcon={<BookmarkBorderOutlinedIcon/>}>Labels</ModalBtn>
                 <Checklist/>
-                <ModalBtn>Dates</ModalBtn>
-                <ModalBtn>Cover</ModalBtn>
+                <ModalBtn startIcon={<ScheduleOutlinedIcon/>}>Dates</ModalBtn>
+                <ModalBtn startIcon={<AttachmentOutlinedIcon/>}>Attachment</ModalBtn>
             </Section>
         )
     }

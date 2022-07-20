@@ -31,10 +31,10 @@ const theme = createTheme({
       contrastText: '#fff',
     },
     secondary: {
-      light: red[500],
-      main: red[700],
-      dark: red[900],
-      contrastText: grey[50]
+      light: grey[100],
+      main: grey[300],
+      dark: grey[400],
+      contrastText: grey[800]
     },
     error: {
       light: red[400],
@@ -75,12 +75,15 @@ const theme = createTheme({
     MuiButton: {
       styleOverrides: {
         root: {
-          color: 'white',
+          boxShadow: 'none',
           whiteSpace: 'nowrap',
           textTransform: 'none',
           fontFamily: 'Helvetica Neue',
           maxHeight: '2.5rem',
           borderRadius: BORDER_RADIUS,
+          '&:hover': {
+            boxShadow: 'none'
+          }
         },
       },
     },

@@ -42,7 +42,7 @@ margin-bottom:5px;
 `
 const MenuBodyContainer = styled.div`
 
-border-sizing: border-box;
+box-sizing: border-box;
 padding: 10px;
 margin: 4px;
 `

@@ -1,7 +1,7 @@
 import store from "../../store"
 import { addList, insertCardToList, updateListBoardId, addCardToList, swapCardInBoard } from '../../store/slice/trelloListSlice'
 import { getBoardById, insertListToBoard, addListToBoard, swapListInBoard } from '../../store/slice/trelloBoardSlice'
-import { getCardById, updateCardListId } from '../../store/slice/trelloCardSlice'
+import { getCardById, updateCardListId, addTask, updateTask, removeTask, addChecklist, updateChecklist, removeChecklist } from '../../store/slice/trelloCardSlice'
 
 // list
 function createList(boardId) {
@@ -105,8 +105,70 @@ function getListById(listId) {
 
 // checklist
 
-function addChecklist(name){
+function AddChecklist(name, cardId) {
+    if (name == null || name === '' || cardId == null)
+        return
+    const checklistId = `checklist-${Math.round(Math.random() * 1000).toString()}`
 
+    store.dispatch(addChecklist({
+        checklistId: checklistId, 
+        cardId: cardId, 
+        name: name, 
+        now: Date.now()
+    }))
+}
+
+function UpdateChecklist(name, cardId, index) { 
+    if (name == null || name === '' || cardId == null || index == null)
+        return
+    store.dispatch(updateChecklist({
+        cardId: cardId, 
+        index: index,
+        name: name, 
+        now: Date.now()
+    }))
+}
+
+function RemoveChecklist(cardId, index) { 
+    if (cardId == null || index == null)
+        return
+    store.dispatch(removeChecklist({
+        cardId: cardId, 
+        index: index,
+        now: Date.now()
+    }))
+}
+// task
+
+function AddTask(cardId, checklistIndex, name) {
+    store.dispatch(addTask({
+        checklistIndex: checklistIndex, 
+        cardId: cardId, 
+        name: name, 
+        now: Date.now()
+    }))
+}
+
+function UpdateTask(cardId, checklistIndex, taskIndex, props) { 
+    const {name, checked} = props
+
+    store.dispatch(updateTask({
+        cardId: cardId, 
+        checklistIndex: checklistIndex,
+        taskIndex: taskIndex,
+        name: name, 
+        checked: checked,
+        now: Date.now()
+    }))
+}
+
+function RemoveTask(cardId, checklistIndex, taskIndex) { 
+    store.dispatch(removeTask({
+        cardId: cardId, 
+        checklistIndex: checklistIndex,
+        taskIndex,taskIndex,
+        now: Date.now()
+    }))
 }
 
 export {
@@ -115,5 +177,13 @@ export {
     moveListToBoard,
     moveCardToList,
     updateCardOrder,
-    getListById
+    getListById,
+    // checklist
+    AddChecklist,
+    UpdateChecklist,
+    RemoveChecklist,
+    // card
+    AddTask,
+    UpdateTask,
+    RemoveTask
 }

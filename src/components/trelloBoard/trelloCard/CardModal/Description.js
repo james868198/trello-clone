@@ -6,12 +6,12 @@ import Button from '@mui/material/Button';
 
 const Container = styled.div`
 position: relative;
-width: 100%:
+width: 100%;
 `
 
 const ButtonList = styled.div`
 position: relative;
-width: 100%:
+width: 100%;
 height: 30px;
 display: flex;
 flex-direction: row;
@@ -29,6 +29,8 @@ resize: none;
 font-family: Helvetica Neue;
 font-size: 14px;
 padding: 10px;
+box-sizing: border-box;
+
 ${({extend}) => {
     if (extend) {
         return `

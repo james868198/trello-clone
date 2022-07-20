@@ -6,7 +6,7 @@ const TextFieldContainer = styled.input`
 position: relative;
 width: 100%;
 box-sizing: border-box;
-
+font-weight: ${({fontWeight})=> fontWeight ? fontWeight : 'Normal'};
 font-size:${({fontSize})=> fontSize ? fontSize : '22px'};
 color: #2d2d2d;
 cursor: pointer;
@@ -85,6 +85,7 @@ export default function TextField({text, handleTextFieldOnBlur,focus, ...props})
             onKeyDown={event => handleKeyDown(event)}
             variant={props.variant}
             fontSize={props.fontSize}
+            fontWeight={props.fontWeight}
         />
     )
 
