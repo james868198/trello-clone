@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/static/css/main.aacb7f1a.css",
-    "main.js": "/static/js/main.2d1c5717.js",
-    "static/js/787.20c63e1b.chunk.js": "/static/js/787.20c63e1b.chunk.js",
-    "index.html": "/index.html",
-    "main.aacb7f1a.css.map": "/static/css/main.aacb7f1a.css.map",
-    "main.2d1c5717.js.map": "/static/js/main.2d1c5717.js.map",
-    "787.20c63e1b.chunk.js.map": "/static/js/787.20c63e1b.chunk.js.map"
+    "main.css": "/james868198.github.io/trello-clone/static/css/main.aacb7f1a.css",
+    "main.js": "/james868198.github.io/trello-clone/static/js/main.d7e42196.js",
+    "static/js/787.20c63e1b.chunk.js": "/james868198.github.io/trello-clone/static/js/787.20c63e1b.chunk.js",
+    "index.html": "/james868198.github.io/trello-clone/index.html",
+    "main.aacb7f1a.css.map": "/james868198.github.io/trello-clone/static/css/main.aacb7f1a.css.map",
+    "main.d7e42196.js.map": "/james868198.github.io/trello-clone/static/js/main.d7e42196.js.map",
+    "787.20c63e1b.chunk.js.map": "/james868198.github.io/trello-clone/static/js/787.20c63e1b.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.aacb7f1a.css",
-    "static/js/main.2d1c5717.js"
+    "static/js/main.d7e42196.js"
   ]
 }
