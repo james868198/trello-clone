@@ -1,0 +1,15 @@
+{
+  "short_name": "Trello Clone",
+  "name": "Create Trello Clone",
+  "icons": [
+    {
+      "src": "trello-icon.svg",
+      "sizes": "200x200",
+      "type": "image/svg"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff"
+}
