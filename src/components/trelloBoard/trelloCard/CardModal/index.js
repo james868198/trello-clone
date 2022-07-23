@@ -25,7 +25,7 @@ position: absolute;
 top: 50%;
 left: 50%;
 transform: translate(-50%, -50%);
-max-height: 900px;
+max-height: 90%;
 overflow-y: scroll;
 `
 const ContainerInner = styled.div`

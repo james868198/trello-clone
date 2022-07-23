@@ -105,7 +105,7 @@ export default function Checklist({checklist, index}) {
                 <DeleteBtn/>
             </Header>
             <Body>
-                {checklist.tasks.map((task, taskIndex) => <CheckCard task={task} cardId={checklist.cardId} checklistIndex={index} index={taskIndex}/>)}
+                {checklist.tasks.map((task, taskIndex) => <CheckCard key={taskIndex} task={task} cardId={checklist.cardId} checklistIndex={index} index={taskIndex}/>)}
             </Body>
             <Bottom>
                 <AddBtn/>

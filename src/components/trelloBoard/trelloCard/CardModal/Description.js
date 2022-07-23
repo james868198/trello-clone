@@ -1,8 +1,6 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
-
 import Button from '@mui/material/Button';
-
 
 const Container = styled.div`
 position: relative;
@@ -14,6 +12,7 @@ position: relative;
 width: 100%;
 height: 30px;
 display: flex;
+margin-top: 16px;
 flex-direction: row;
 justify-content: start;
 align-items: center;
@@ -27,25 +26,24 @@ display: inline-block;
 border-radius: 3px;
 resize: none;
 font-family: Helvetica Neue;
-font-size: 14px;
+font-size: 16px;
 padding: 10px;
 box-sizing: border-box;
-
-${({extend}) => {
+${({extend, empty} ) => {
     if (extend) {
         return `
-            height: 100px;
+            min-height: 120px;
             background-color: #ffffff;
         `
     } else {
         return `
             border: none;
-            height: 60px;
-            background-color: '#e4e4e4';
+            min-height: 80px;
+            background-color: ${empty? '#e4e4e4': 'transparent'};
             cursor: pointer;
 
             &:hover {
-                background-color: #b0b0b0;
+                background-color: ${empty? '#b0b0b0': 'transparent'};
             }
         `
     }
@@ -53,12 +51,23 @@ ${({extend}) => {
 
 `
 
-const PLACEHOLDER = 'Add a more detail description...'
+const PLACEHOLDER = 'Add a more detailed description...'
 
 export default function Description({description, handleUpdateDescription}) {
     const [showTextField, setShowTextField] = useState(false)
     const textRef = useRef(null)
     
+    useEffect(() => {
+        if (textRef && textRef.current && description)
+            textRef.current.value = description
+    })
+
+    useEffect(() => {
+        if (textRef.current.scrollHeight > textRef.current.clientHeight) {
+            textRef.current.style.height = textRef.current.scrollHeight + "px";
+        }
+    }, [textRef])
+
     const handleClickContent = (e) => {
         e.stopPropagation()
         setShowTextField(true)
@@ -66,14 +75,17 @@ export default function Description({description, handleUpdateDescription}) {
 
     const handleClickSave = (e) => {
         e.stopPropagation()
-        if(textRef && textRef.current && textRef.current.value)
-            handleUpdateDescription(textRef.current.value)
+        if(textRef && textRef.current)
+            handleUpdateDescription(textRef.current.value || "")
         setShowTextField(false)
 
     }
 
     const handleClickCancel = (e) => {
         e.stopPropagation()
+        console.log("handleClickCancel", description)
+        if(textRef && textRef.current)
+            textRef.current.value = description
         setShowTextField(false)
     }
 
@@ -99,11 +111,10 @@ export default function Description({description, handleUpdateDescription}) {
         <Container>
             <TextField 
                 extend={showTextField}
-                empty={description == null || description == undefined || description === ""} 
+                empty={description == null || description === ""} 
                 ref={textRef} 
-                onClick={event => handleClickContent(event)}  
-                placeholder={description != null ? description: PLACEHOLDER}
-                onBlur={event => handleClickSave(event)}
+                onClick={e => handleClickContent(e)}  
+                placeholder={PLACEHOLDER}
                 />
             <Buttons/>
         </Container>

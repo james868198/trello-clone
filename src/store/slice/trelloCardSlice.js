@@ -34,7 +34,7 @@ export const trelloCardSlice = createSlice({
         },
         updateCardDescription: (state, action) => {
             const { cardId, description } = action.payload
-            if (!state.cards.hasOwnProperty(cardId) || description == null || description === "" || description === state.cards[cardId].description)
+            if (!state.cards.hasOwnProperty(cardId) || description == null || description === state.cards[cardId].description)
                 return
             state.cards[cardId].description = description
         },
