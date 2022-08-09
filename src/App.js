@@ -1,17 +1,17 @@
-import { Provider } from "react-redux";
-import store from "./store";
-import Route from "./route";
+import { Provider } from "react-redux"
+import store from "./store"
+import Route from "./route"
 
-import './App.css';
+import "./App.css"
 
 function App() {
-  return (
-    <Provider store={store}>
-      <div className="App">
-        <Route/>
-      </div>
-    </Provider>
-  );
+    return (
+        <Provider store={store}>
+            <div className="App">
+                <Route />
+            </div>
+        </Provider>
+    )
 }
 
-export default App;
+export default App

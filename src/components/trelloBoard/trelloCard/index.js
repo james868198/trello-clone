@@ -1,104 +1,96 @@
-
-import React, { useState, useMemo } from 'react';
-import { useSelector } from 'react-redux';
-import { getCardById } from '../../../store/slice/trelloCardSlice';
-import { useDNDContext }  from '../DNDContext';
-import styled from 'styled-components';
-import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
-import TextModal from './TextModal';
-import CardModal from './CardModal';
+import React, { useState, useMemo } from "react"
+import { useSelector } from "react-redux"
+import { getCardById } from "../../../store/slice/trelloCardSlice"
+import { useDNDContext } from "../DNDContext"
+import styled from "styled-components"
+import EditOutlinedIcon from "@mui/icons-material/EditOutlined"
+import TextModal from "./TextModal"
+import CardModal from "./CardModal"
 
 export const Status = styled.div`
-position: relative;
-width: 100%;
-margin: 5px;
+    position: relative;
+    width: 100%;
+    margin: 5px;
 `
 
 export const StatusIcon = styled.div`
-position: relative;
+    position: relative;
 `
 
 export const Section = styled.div`
-position: relative;
-width: 100%;
-height: 30px;
-flex-wrap: nowrap;
-display: flex;
-flex-direction: row;
-justify-content: space-between;
-align-items: center;
+    position: relative;
+    width: 100%;
+    height: 30px;
+    flex-wrap: nowrap;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
 `
 
 export const TitleContainer = styled.span`
-position: relative;
-margin-left: 10px;
-width: 80%;
-text-overflow: ellipsis;
-white-space: nowrap;
-overflow:hidden;
-text-align:left;
+    position: relative;
+    margin-left: 10px;
+    width: 80%;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    text-align: left;
 `
 
-
 export const IconContainer = styled.span`
-position: absolute;
-right: -10px;
-border-radius: 3px;
-margin-right: 15px;
-display: none;
+    position: absolute;
+    right: -10px;
+    border-radius: 3px;
+    margin-right: 15px;
+    display: none;
 
-:hover {
-    background-color: #FCFCFC;
-}
+    :hover {
+        background-color: #fcfcfc;
+    }
 `
 
 export const Container = styled.div`
-position: relative;
-margin-left:15px;
-margin-right:15px;
-margin-bottom:7px;
-height: 36px;
-border-radius: 3px;
-background-color: #ffffff;
-box-shadow: 0 1px 3px #8C8C8C;
-cursor: pointer;
-display: flex;
-flex-direction: column;
-justify-content: space-around;
+    position: relative;
+    margin-left: 15px;
+    margin-right: 15px;
+    margin-bottom: 7px;
+    height: 36px;
+    border-radius: 3px;
+    background-color: #ffffff;
+    box-shadow: 0 1px 3px #8c8c8c;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
 
-&:hover {
-    background-color: #EDEDED; 
-}
+    &:hover {
+        background-color: #ededed;
+    }
 
-&:hover ${IconContainer} {
-    display: inline;
-}
-
+    &:hover ${IconContainer} {
+        display: inline;
+    }
 `
 
-export default function TrelloCard({cardId, ...props}) {
-
-    const [showTextModal, setShowTextModal] = useState(false);
-    const [showCardModal, setShowCardModal] = useState(false);
-    const card = useSelector(getCardById(cardId));
-    const {
-        draggedCard
-      } = useDNDContext()
-    if (!card)
-        return null
+export default function TrelloCard({ cardId, ...props }) {
+    const [showTextModal, setShowTextModal] = useState(false)
+    const [showCardModal, setShowCardModal] = useState(false)
+    const card = useSelector(getCardById(cardId))
+    const { draggedCard } = useDNDContext()
+    if (!card) return null
 
     // callback
     const handleShowModal = (e, callback, open = false) => {
-        e.stopPropagation(); 
-        e.preventDefault();
-        if (typeof open !== "boolean")
-            return
+        e.stopPropagation()
+        e.preventDefault()
+        if (typeof open !== "boolean") return
         callback(open)
     }
 
     // component
     const StatusList = () => {
-        if(!card.status) {
+        if (!card.status) {
             return
         }
 
@@ -107,39 +99,36 @@ export default function TrelloCard({cardId, ...props}) {
         })
 
         return (
-        <Section>
-            <Status>
-                <StatusIcons/>
-            </Status>
-        </Section>
+            <Section>
+                <Status>
+                    <StatusIcons />
+                </Status>
+            </Section>
         )
     }
 
     const Title = () => {
-
         return (
-        
-        <Section>  
-            <TitleContainer>
-                {card.title}
-            </TitleContainer>
-            <IconContainer onClick={event => handleShowModal(event, setShowTextModal, true)}>
-                <EditOutlinedIcon sx={{fontSize: '22px'}}/>
-            </IconContainer>
-        </Section>)
+            <Section>
+                <TitleContainer>{card.title}</TitleContainer>
+                <IconContainer onClick={(event) => handleShowModal(event, setShowTextModal, true)}>
+                    <EditOutlinedIcon sx={{ fontSize: "22px" }} />
+                </IconContainer>
+            </Section>
+        )
     }
 
     return (
-        <Container draggable 
-            key={card.id} 
-            id={cardId} 
-            onClick={event => handleShowModal(event, setShowCardModal, true)}
-            >
-            <TextModal cardId={cardId} open={showTextModal} handleCloseModal={() => setShowTextModal(false)}/>
-            <Title/>
-            <StatusList/>
-            <CardModal cardId={cardId} open={showCardModal}  handleCloseModal={() => setShowCardModal(false)}/>
+        <Container
+            draggable
+            key={card.id}
+            id={cardId}
+            onClick={(event) => handleShowModal(event, setShowCardModal, true)}
+        >
+            <TextModal cardId={cardId} open={showTextModal} handleCloseModal={() => setShowTextModal(false)} />
+            <Title />
+            <StatusList />
+            <CardModal cardId={cardId} open={showCardModal} handleCloseModal={() => setShowCardModal(false)} />
         </Container>
     )
-    
 }

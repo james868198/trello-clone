@@ -1,25 +1,25 @@
 {
-  "short_name": "Trello Clone",
-  "name": "Create Trello Clone",
-  "icons": [
-    {
-      "src": "favicon.ico",
-      "sizes": "64x64 48x48 32x32",
-      "type": "image/x-icon"
-    },
-    {
-      "src": "logo144.png",
-      "type": "image/png",
-      "sizes": "144x144"
-    },
-    {
-      "src": "logo480.png",
-      "type": "image/png",
-      "sizes": "480x480"
-    }
-  ],
-  "start_url": ".",
-  "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+    "short_name": "Trello Clone",
+    "name": "Create Trello Clone",
+    "icons": [
+        {
+            "src": "favicon.ico",
+            "sizes": "64x64 48x48 32x32",
+            "type": "image/x-icon"
+        },
+        {
+            "src": "logo144.png",
+            "type": "image/png",
+            "sizes": "144x144"
+        },
+        {
+            "src": "logo480.png",
+            "type": "image/png",
+            "sizes": "480x480"
+        }
+    ],
+    "start_url": ".",
+    "display": "standalone",
+    "theme_color": "#000000",
+    "background_color": "#ffffff"
 }
